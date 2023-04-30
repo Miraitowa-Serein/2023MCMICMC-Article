@@ -1,0 +1,239 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8
+\documentclass{MathModeling}
+\usepackage{mwe,color,float}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+\usepackage{setspace}
+\usepackage{colortbl}
+\everymath{\displaystyle}
+
+\extrafloats{500}
+\timu{\textbf{题目}}
+\keyword{；号隔开}
+\begin{document}
+	\begin{abstract}
+		最后，本文对所建立的模型进行中肯评价、提出改进措施，并对模型进行一定推广。
+	\end{abstract}
+
+	\pagestyle{empty}
+	\tableofcontents
+	\newpage
+	\pagestyle{fancy}
+
+	\setcounter{page}{1}
+	\section{问题的提出}
+	\subsection{问题背景}
+	
+	\subsection{问题要求}
+	\begin{itemize}
+		\item \textbf{问题一}：
+		\item \textbf{问题二}：
+		\item \textbf{问题三}：
+		\item \textbf{问题四}：
+		\item \textbf{问题五}：
+	\end{itemize}
+
+	\section{问题的分析}
+	\subsection{问题的整体分析}
+	该问题是一个x的问题。
+	
+	\textbf{从分析目的看}，
+
+	\textbf{从数据来源、特征看}，
+	
+	\textbf{从模型的选择看}，
+
+	\textbf{从编程软件的选择看}，本题为大数据分析类，需要进行大量的数据预处理、数据分析、数据可视化，并依据各设问建立预警自动化智能预警机制，因此我们选择Python Jupyter对问题进行求解，其交互式的编程范式及轻量化，方便且高效。
+	
+	\subsection{问题一的分析}
+	
+	\subsection{问题二的分析}
+	
+	\subsection{问题三的分析}
+	
+	\subsection{问题四的分析}
+	
+	\subsection{问题五的分析}
+	
+	\section{模型的假设}
+	\begin{itemize}
+		\item \textbf{假设一}：
+		\item \textbf{假设二}：
+		\item \textbf{假设三}：
+	\end{itemize}
+	\section{符号说明}
+	\begin{center}
+		\begin{tabularx}{0.7\textwidth}{c@{\hspace{1pc}}|@{\hspace{2pc}}X}
+			\Xhline{0.08em}
+			符号 & \multicolumn{1}{c}{符号说明}\\
+			\Xhline{0.05em}
+			$\mu$ & 样本平均数 \\
+			$\sigma$ & 样本标准差 \\
+			$x_{\mathrm{standard}}$ & 经过标准化后的数据\\
+			$R\left(x\right)_{m\times n}$ & 经过某项处理后的数据特征集\\
+			$\hat{y}$ & 预测值\\
+			$L^{\left(t\right)}$ & 目标函数\\
+			$\omega$ & 权重\\
+			\Xhline{0.08em}
+		\end{tabularx}
+	\end{center}
+
+	\textbf{注：}这里并未列出部分变量，这是由于它们在不同小节处有不同的含义，因此我们会在每一节中详细讨论它们。
+	\section{模型的建立与求解}
+	对于本题，本文模型的建立与求解部分主要分为数据的准备，模型的建立、求解、结果分析。
+	\begin{itemize}
+		\item \textbf{数据的准备}：对于给定的数据集进行预处理，方便后续模型的建立，以及多次航班的规范分析。
+		\item \textbf{模型的建立、求解、结果分析}：对于给定的数据集，本文依据其特点，建立合适的模型，研究并量化分析影响飞行安全的因素。此外还需要分析飞行阶段操纵杆的过程变化情况，分析安全性。同时，还需要依据飞行参数对驾驶员飞行技术进行预测，并解释预测的合理性。最后需要结合上述问题，建立自动化智能预警机制，预防可能的安全事故的发生，给出仿真结果。
+	\end{itemize}
+
+	\subsection{问题一模型的建立与求解}
+	
+	\subsection{问题二模型的建立与求解}
+	
+	\subsection{问题三模型的建立与求解}
+  
+	\subsection{问题四模型的建立与求解}
+
+	\subsection{问题五模型的建立与求解}
+
+\section{模型的评价与推广}
+	\subsection{模型的评价}
+	\begin{itemize}
+		\item \textbf{模型的优点}：
+			\begin{enumerate}
+				\item 
+				\item 
+			\end{enumerate}
+		\item \textbf{模型的缺点及改进}：
+			\begin{enumerate}
+				\item 
+				\item 
+			\end{enumerate}
+	\end{itemize}
+	\subsection{模型的推广}
+	
+	\newpage
+	\phantomsection
+	\addcontentsline{toc}{section}{\textbf{参考文献}}
+	\begin{spacing}{1.08}
+	\begin{thebibliography}{99}
+	\bibitem{Paper:刘柳}刘柳. 基于QAR数据的着陆阶段飞行风险研究[D].重庆大学,2018.
+	\bibitem{Paper:龙海江}龙海江. 基于QAR数据的重着陆分析研究[D].中国民用航空飞行学院,2020.DOI:10.27722/d.cnki.gzgmh.2020.000089.
+	\bibitem{Paper:李瀚明}QAR数据为什么不能简单的清洗和修正？[EB/OL].\url{http://news.carnoc.com/list/593/593309.html}.
+	\bibitem{Paper:胡占桥}使用QAR实现进近着陆指标评估设计思路浅析.[EB/OL].\url{http://news.carnoc.com/list/593/593265.html}.
+	\bibitem{Paper:标准化}CSDN.【数据预处理】sklearn实现数据预处理（归一化、标准化）[EB/OL].
+	
+	\url{https://blog.csdn.net/weixin_44109827/article/details/124786873}.
+
+	\bibitem{Paper:EWMO}姚文宇,李杰,李岩峰,高娜,王涛. 基于熵权法的呼吸机质量综合评价研究[C]//.中国医学装备大会暨2022医学装备展览会论文汇编（下册）.[出版者不详],2022:162-167.DOI:10.26914/c.cnkihy.2022.042155.
+
+	\bibitem{Paper:EWMT}谢赤,钟赞.熵权法在银行经营绩效综合评价中的应用[J].中国软科学,2002(09):109-111+108.
+
+	\bibitem{Paper:概率论与数理统计}刘建新,史志仙.概率论与数理统计[M].北京:高等教育出版社,2016:115.
+
+	\bibitem{Paper:层次聚类}司守奎,孙玺菁.数学建模算法与应用[M].北京:国防工业出版社,2022:264.
+
+	\bibitem{Paper:随机森林}饶雷,冉军,陶建权,胡号朋,吴沁,熊圣新.基于随机森林的海上风电机组发电机轴承异常状态监测方法[J].船舶工程,2022,44(S2):27-31.DOI:10.13788/j.cnki.cbgc.2022.S2.06.
+
+	\bibitem{pxgboost1}陈振宇,刘金波,李晨,季晓慧,李大鹏,黄运豪,狄方春,高兴宇,徐立中.基于LSTM与XGBoost组合模型的超短期电力负荷预测[J].电网技术,2020,44(02):614-620.DOI:10.13335/j.1000-3673.pst.2019.1566.
+
+	\bibitem{pxgboost2}杨贵军,徐雪,赵富强.基于XGBoost算法的用户评分预测模型及应用[J].数据分析与知识发现,2019,3(01):118-126.
+
+	\bibitem{pxgboost3}Tianqi Chen and Carlos Guestrin. 2016. XGBoost: A Scalable Tree Boosting System. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD '16). Association for Computing Machinery, New York, NY, USA, 785–794. \url{https://doi.org/10.1145/2939672.2939785}.
+
+	\bibitem{Paper:ROCAUC}A.Tharwat, Applied Computing and Informatics (2018). \url{https://doi.org/10.1016/j.aci.2018.08.003}.
+
+	\bibitem{Paper:郑薇}郑薇. 基于QAR数据的重着陆风险评估及预测研究[D].中国民航大学,2014.
+
+	\bibitem{Paper:正态分布}汪磊,孙瑞山,吴昌旭,崔振新,陆正.基于飞行QAR数据的重着陆风险定量评价模型[J].中国安全科学学报,2014,24(02):88-92.DOI:10.16265/j.cnki.issn1003-3033.2014.02.016.
+	\end{thebibliography}
+	\end{spacing}
+	\newpage
+
+	\phantomsection
+	\addcontentsline{toc}{section}{\textbf{附\hspace{2pc}录}}
+
+	% \appendix
+	% \ctexset{section={format={\zihao{-4}\heiti\raggedright}}}
+	\begin{center}
+		\heiti\zihao{4} 附\hspace{2pc}录
+	\end{center}
+
+% \phantomsection
+% \addcontentsline{toc}{subsection}{[A]图示}
+	% \section*{[A]图示}
+	\noindent{\heiti [A]图示}
+	
+\newpage
+% \phantomsection
+% \addcontentsline{toc}{subsection}{[B]支撑文件列表}
+	% \section*{[B]支撑文件列表}
+	\noindent{\heiti [B]支撑文件列表}
+	~\\
+
+	支撑文件列表如下（列表中不包含原始数据集以及中途产生的临时数据文件）：
+
+\begin{table}[H]
+	\centering
+	  \begin{tabular}{cc}
+	  \toprule
+	  \textbf{文件夹名} & \textbf{描述} \\
+	  \midrule
+	  html文件 & 包括所有解决问题的源程序运行结果 \\
+	  ipynb文件 & 包括所有解决问题的源程序源代码 \\
+	  py文件  & 包括所有解决问题的源程序输出python文件 \\
+	  仿真结果  & 包括附件1的8次航班全时刻的飞行状态预警 \\
+	  \bottomrule
+	  \end{tabular}
+\end{table}
+
+	\noindent{\heiti [C]使用的软件、环境}
+	~\\
+
+	\textbf{C.1}：为解决该问题，我们所使用的主要软件有：
+	\begin{itemize}
+		\item TeX Live 2022
+		\item Visual Studio Code 1.77.3
+		\item WPS Office 2023春季更新（14036）
+		\item Python 3.10.4
+		\item Pycharm 2023.1 (Professional Edition)
+	\end{itemize}
+
+	\textbf{C.2}：Python环境下所用使用到的库及其版本如下：
+\begin{table}[H]
+	\centering
+	\setlength{\aboverulesep}{0pt}
+	\setlength{\belowrulesep}{0pt}
+	\scalebox{0.85}{
+	  \begin{tabular}{cc||cc}
+	  \toprule
+	  \textbf{库}     & \textbf{版本}    & \textbf{库}     & \textbf{版本} \\
+	  \midrule
+	  copy  & 内置库   & matplotlib & 3.5.2 \\
+	  jupyter & 1.0.0 & numpy & 1.22.4+mkl \\
+	  jupyter-client & 7.3.1 & openpyxl & 3.0.10 \\
+	  jupyter-console & 6.4.3 & pandas & 1.4.2 \\
+	  jupyter-contrib-core & 0.4.0 & pyecharts & 1.9.1 \\
+	  jupyter-contrib-nbextensions & 0.5.1 & scikit-learn & 0.22.2 psot1 \\
+	  jupyter-highlight-selected-word & 0.2.0 & sklearn & 0.0  \\
+	  jupyterlab-pygments & 0.2.2 & snapshot\_phantomjs & 0.0.3 \\
+	  jupyterlab-widgets & 1.1.0 & xgboost & 1.6.1 \\
+	  jupyter-latex-envs & 1.4.6 & yellowbrick & 1.4 \\
+	  jupyter-nbextensions-configurator & 0.5.0 &       &  \\
+	  \bottomrule
+	  \end{tabular}}
+\end{table}
+  
+\newpage
+
+\noindent{\heiti [D]问题解决源程序}
+
+\textbf{D.1 航班1数据分析}
+
+\newpage
+\textbf{D.2 航班2数据分析}
+
+\newpage
+\textbf{D.3 航班3数据分析}
+
+\end{document}
