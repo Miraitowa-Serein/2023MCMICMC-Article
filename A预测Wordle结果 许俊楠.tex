@@ -9,12 +9,24 @@
 \everymath{\displaystyle}
 
 \extrafloats{500}
-\timu{\textbf{题目}}
-\keyword{；号隔开}
+\timu{\textbf{Wordle游戏探讨及预测}}
+\keyword{自然语言分析；XGBoost；随机森林；K-means单词聚类；SVM-OVR}
 \begin{document}
 \setcounter{page}{1}
 \pagestyle{fancy}
 	\begin{abstract}
+		Wordle是一款具有简单绘画风格的猜词小游戏，在网络上非常流行，Wordle玩家会在各种社交平台上分享他们的战绩。优化游戏设计、提高用户体验，对提高受欢迎程度、娱乐价值至关重要。因此，本文采用了回归、聚类、预测、自然语言处理等方法，对Wordle游戏的数据进行分析。
+
+		{\heiti 针对问题一}，\textbf{需要分析Wordle的Twitter玩家每日报告结果变化情况，并建立模型来解释这种变化；对2023年5月15日的报告结果进行预测，并给出置信水平；分析单词属性是否会影响困难模式下玩家尝试次数的比例，并解释原因。}由于数据集仅有2022年的一部分，且问题需要预测2023年5月15日，因此，本文首先对2023年相关数据进行\textbf{爬取}。之后对数据进行合并整理，同时对\textbf{百分比异常值、异常单词、人数异常值}进行\textbf{预处理}。在此基础上，本文对游戏\textbf{生命周期}进行分析，建立\textbf{XGBoost回归预测模型}，分别对每日报告玩家总数及选择困难模式游戏玩家人数进行数据学习、测试、预测。两模型\textbf{拟合优度}$\boldsymbol{R^2}$分别可达$\boldsymbol{0.9957}$及$\boldsymbol{0.9959}$，其\textbf{MAE}、\textbf{MSE}、\textbf{RMSE}均较小，具体见\textcolor{blue}{\cref{tab:XGBoost预测结果}}。最终得到2023年5月15日报告总人数区间结果为$\boldsymbol{\left[17831,18352\right]}$，选择困难模式游戏人数为$\boldsymbol{\left[1856,1892\right]}$，且结果建立在$\boldsymbol{95\,\%}$的\textbf{置信水平}上。此外本文还对单词进行属性分析，构造出\textbf{单词词性、元音字母个数、每位字母在英文中出现频率、单词中重复字母个数}等特征，绘制\textbf{皮尔逊相关系数热力图}，分析单词属性与玩家游戏中的表现的关联性，具体结果见{\heiti \textcolor{blue}{\nameref{单词属性与玩家游戏中的表现关联分析}}}。
+
+		{\heiti 针对问题二}，\textbf{需要对给定的单词预测当天玩家游戏尝试次数百分比分布情况，并分析模型的不确定性因素。}因此，本文综合\textbf{XGboost，线性预测，随机森林，LightGBM回归模型}进行分析，依据\textbf{MAE}、\textbf{MSE}、\textbf{RMSE}、$\boldsymbol{R^2}$，选择最优的算法进行预测，模型效果比较见\textcolor{blue}{\cref{tab:回归模型指标}}。最终本文选择随机森林模型对单词“EERIE”进行预测，其百分比结果为$\boldsymbol{\left[0.17,4.73,16.24,30.72,27.86,14.03,6.08\right]}$，模型\textbf{MAE}控制在$\boldsymbol{2\,\%}$内，效果良好。此外，本文还对模型的不确定性因素进行分析，具体结果见{\heiti \textcolor{blue}{\nameref{不确定性因素分析}}}。
+
+		{\heiti 针对问题三}，\textbf{需要根据单词难度对单词分类，预测单词“EERIE”难度，同时给出模型的预测精度。}因此本文结合问题一所构造的特征及相关指标，建立\textbf{K-means单词聚类}模型，通过\textbf{肘部法则}确定最优$\boldsymbol{k=5}$，在此基础上将单词划分为\textbf{“非常容易”“容易”“中等”“困难”“非常困难”5个类别}。再利用\textbf{SVM-OVR多分类}模型，在已划分难度的数据集上学习，对单词“EERIE”难度进行预测，最终其被归类为\textbf{“困难”}，模型精度可达$\boldsymbol{94.74\,\%}$。此外本文针对该模型进行\textbf{灵敏度分析检验}，绘制其\textbf{混淆矩阵热力图、分类报告、ROC/AUC曲线}等，最终确定模型效果优良，具体见{\heiti \textcolor{blue}{\nameref{灵敏度分析}}}。
+
+		{\heiti 针对问题四}，本文结合\textbf{散点、核密度、折线、雷达、小提琴等图}进行分析，得出更深层次结论，具体分析结果见{\heiti \textcolor{blue}{\nameref{问题四}}}。
+
+		{\heiti 针对问题五}，本文综合上述问题的分析，向纽约时报的谜题编辑总结结果并提出相关建议，本文提供英文及中文信函各一份，具体见{\heiti \textcolor{blue}{\nameref{问题五}}}。
+
 		最后，本文对所建立的模型进行中肯评价、提出改进措施，并对模型进行一定推广。
 	\end{abstract}
 
@@ -60,7 +72,7 @@
 	\textbf{从编程软件的选择看}，本题为数据分析类，需要进行数据预处理、数据分析、数据可视化，并依据各设问建立不同类别的模型，因此我们选择Python Jupyter Notebook对问题进行求解，其交互式的编程范式及轻量化，方便且高效。
 	
 	\subsection{问题一的分析}
-	问题一的核心目的有以下几点：{\heiti 其一}，\textbf{对报告数据进行预处理，去伪存真}；{\heiti 其二}，\textbf{研究每日结果数据的变化}；{\heiti 其三}，预测2023年5月15日报告结果数量，并建立一个合理区间；{\heiti 其四}，\textbf{研究分析单词属性与困难模式得分的关系}。对于给定的数据集，我们发现部分数据在正确性，完整度性等方面存在一定缺陷，因此我们须对数据集进行预处理。由于附数据体量较大，因此我们将将总人数，选择困难模式人数及其变化率数据可视化，直观分析变化规律并建立普适性预测模型。同时我们还考虑到游戏人数数据等不符合正态分布，因此我们放弃线性回归而选择XGBoost模型进行回归预测。此外我们对单词进行属性分析，利用Python自然语言处理nltk库，建立单词的属性模型，并绘制皮尔逊相关系数热力图分析其中的关系。
+	问题一的核心目的有以下几点：{\heiti 其一}，\textbf{对报告数据进行预处理，去伪存真}；{\heiti 其二}，\textbf{研究每日结果数据的变化}；{\heiti 其三}，\textbf{预测2023年5月15日报告结果数量，并建立一个合理区间}；{\heiti 其四}，\textbf{研究分析单词属性与困难模式得分的关系}。对于给定的数据集，我们发现部分数据在正确性，完整度性等方面存在一定缺陷，因此我们须对数据集进行预处理。由于附数据体量较大，因此我们将将总人数，选择困难模式人数及其变化率数据可视化，直观分析变化规律并建立普适性预测模型。同时我们还考虑到游戏人数数据等不符合正态分布，因此我们放弃线性回归而选择XGBoost模型进行回归预测。此外我们对单词进行属性分析，利用Python自然语言处理nltk库，建立单词的属性模型，并绘制皮尔逊相关系数热力图分析其中的关系。
 
 	\subsection{问题二的分析}
 	问题二的核心目的在于\textbf{预测报告结果中玩家尝试次数分布的情况，并分析模型的不确定性因素}。因此我们根据问题一中已构造的单词属性，综合XGboost，线性分析，随机森林，LightGBM等回归模型的MSE、RMSE、MAE、$R^2$指标，对模型进行分析，选择最优模型，建立预测给定日期的单词玩家尝试次数分布的百分比的普适性模型，对2023年5月15日单词“EERIE”进行预测，最后分析模型中的不确定性因素。
@@ -100,7 +112,7 @@
 
 	\textbf{注：}这里并未列出其余变量，这是由于它们在不同小节处有不同的含义，同时该表中也未列出专有定义的变量，这些变量在使用时会在相应位置进行详细说明。
 	\section{模型的建立与求解}
-	本文模型的建立与求解部分主要分为数据的准备，模型的建立、求解、结果分析。\textcolor{blue}{\footnote{本文所有可视化图示均为矢量图，若读者在阅读时发现图示字体过小，可适当放大PDF页面，详细查看图示数据等。}}
+	本文模型的建立与求解部分主要分为数据的准备，模型的建立、求解、结果分析。\textcolor{blue}{\footnote{本文所有可视化图示均为矢量图，若读者在阅读时发现图示字体过小，可适当放大PDF页面，详细查看图示数据等。此外，本文所有图示、表格均已交叉引用，读者阅读PDF时可点击对应图表，进行跳转。}}
 	\begin{itemize}
 		\item \textbf{数据的准备}：首先爬取2023年相关数据，提高模型分析的准确性。再者，对于构建的新数据集进行预处理，方便后续模型的建立，减少异常值对分析的影响；
 		\item \textbf{模型的建立、求解、结果分析}：对于整理完成的新数据集，本文依据其特点，建立合适的回归、聚类、分类预测模型，并进行多种数据可视化，分析模型效果。
@@ -236,16 +248,15 @@
 \end{table}
 
 	\subsubsection{异常值处理}
-对于异常值的处理，为了尽可能保留数据信息，我们采用拉格朗日插值法，对上述异常数据进行修正。
-拉格朗日插值法（Lagrange's Interpolation）是一种多项式插值的方法。对于给定的$n+1$个坐标不同的点，其可以给出一个恰好经过这$n+1$个点的多项式函数。拉格朗日基本多项式（插值基函数）如下
+对于异常值的处理，为了尽可能保留数据信息，我们采用拉格朗日插值法，对上述异常数据进行修正。\textbf{拉格朗日插值法（Lagrange's Interpolation）}是一种多项式插值的方法。对于给定的$n+1$个坐标不同的点，其可以给出一个恰好经过这$n+1$个点的多项式函数。拉格朗日基本多项式（插值基函数）如下
 \begin{equation}
 	l_{j}\left(x\right)=\prod_{i=0,i\neq j}^{n}\frac{x-x_{i}}{x_{j}-x_{i}},j=0,1,\cdots,n
 \end{equation}
+
 则拉格朗日插值多项式为
 \begin{equation}
 	L\left(x\right)=\sum_{j=0}^{n}y_{j}l_{j}\left(x\right)
 \end{equation}
-此多项式经过给定的$n+1$个点。
 
 经过上述处理后，我们对异常值进行了修正，得到了新的数据，见\textcolor{blue}{\cref{tab:异常值修正后数据1}}及\textcolor{blue}{\cref{tab:异常值修正后数据2}}。
 \begin{table}[H]
@@ -295,7 +306,7 @@
 		\label{fig:正态分布分析}
 	\end{figure}
 	
-	上图左图描述报告结果数量与频率的关系，们发现报告结果数量主要集中在$20000$附近，位于其他区间的报告结果数量出现的频率很小。右图描述了样本分位数与观测值确实服从正态分布时所观察到的分位数之间的关系，当各点近似分布在一条直线附近时，可认为正态性假设成立。而图中点连成的曲线与直线存在很大偏差，故人数不符合正态分布。因此我们有理由认为对于该数据集，进行线性回归分析可能会在一定程度上得到较优效果，但这并不是在数据集集中部分的效果，极有可能会对未来的预测产生较大误差，因此我们考虑建立极端梯度提升（eXtreme Gradient Boosting，XGBoost）模型，首先对每日报告总人数进行预测，再对选择困难模式人数进行预测分析。
+	上图左图描述报告结果数量与频率的关系，发现报告结果数量主要集中在$20000$附近，位于其他区间的报告结果数量出现的频率很小。右图描述了样本分位数与观测值确实服从正态分布时所观察到的分位数之间的关系，当各点近似分布在一条直线附近时，可认为正态性假设成立。而图中点连成的曲线与直线存在很大偏差，故人数不符合正态分布。因此我们有理由认为对于该数据集，进行线性回归分析可能会在一定程度上得到较优效果，但这并不是在数据集集中部分的效果，极有可能会对未来的预测产生较大误差，因此我们考虑建立\textbf{极端梯度提升（eXtreme Gradient Boosting，XGBoost）}模型，首先对每日报告总人数进行预测，再对选择困难模式人数进行预测分析。
 	XGBoost算法是一种基于树模型的优化模型，该算法通过多次迭代，生成一个新的树模型用于优化前一个树模型，随着迭代次数的增多，该模型的预测精度也会相应提高\textcolor{blue}{\cite{pxgboost1}}。
 
 		记通过数据处理后的数据集特征为$R\left(x_{ij}\right)_{m\times n}$，表示其包含$m$天的游戏情况，$n$个特征，在训练中形成的CART树的集合记为$F=\left\{f\left(x\right)=w_{q\left(x\right)},q:\mathbf{R}^n\to T,w\in \mathbf{R}^T\right\}$，其中$q$为树模型的叶节点决策规划，$T$为某一树模型叶节点数量，$w$为叶节点对应的得分\textcolor{blue}{\cite{pxgboost2}}。对于预测的$y$值，即$\hat{y}$，计算公式为
@@ -363,7 +374,7 @@
 			\label{fig:XGBoost预测误差困难人数}
 		\end{minipage}
 	\end{figure}
-	此外，我们还计算出模型的平均绝对误差（Mean Absolute Error，MAE）、均方误差（Mean Squared Error，MSE）、均方根误差（Root Mean Squared Error，RMSE），以及拟合优度（Goodness of Fit）即$R^2$，最终计算结果见\textcolor{blue}{\cref{tab:XGBoost预测结果}}。具体计算方式如下
+	此外，我们还计算出模型的\textbf{平均绝对误差（Mean Absolute Error，MAE）}、\textbf{均方误差（Mean Squared Error，MSE）}、\textbf{均方根误差（Root Mean Squared Error，RMSE）}，以及\textbf{拟合优度（Goodness of Fit）}即$\boldsymbol{R^2}$，最终计算结果见\textcolor{blue}{\cref{tab:XGBoost预测结果}}。
 	\begin{itemize}
 		\item \textbf{平均绝对误差}
 			\begin{equation}
@@ -399,7 +410,7 @@
 	\label{tab:XGBoost预测结果}
 \end{table}
 
-现我们将对2023年5月15日报告情况进行预测，并且为使分析更具有一般性，我们给出在$95\,\%$的置信水平下的预测区间。但在上述分析中，我们发现对于每日报告的人数并不服从正态分布，这是由于我们选取Wordle从发布至今的每日人数情况进行分析，但游戏从发布至今存在增长、成熟、衰退与稳定的时期。根据\textcolor{blue}{\cref{fig:XGBoost预测结果总人数}}及\textcolor{blue}{\cref{fig:XGBoost预测结果困难人数}}所示结果，我们可以发现从2022年6月开始，Wordle的人数逐渐进入稳定期，对于该时期的数据我们有理由认为其每日报告的人数服从正态分布。因此我们可以利用\textcolor{blue}{\cref{tab:XGBoost预测结果}}中的均方根误差（RMSE）来计算预测区间，其计算方式如下：
+现我们将对2023年5月15日报告情况进行预测，并且为使分析更具有一般性，我们给出在$95\,\%$的置信水平下的预测区间。但在上述分析中，我们发现对于每日报告的人数并不服从正态分布，这是由于我们选取Wordle从发布至今的每日人数情况进行分析，但游戏从发布至今存在增长、成熟、衰退与稳定的时期。根据\textcolor{blue}{\cref{fig:XGBoost预测结果总人数}}及\textcolor{blue}{\cref{fig:XGBoost预测结果困难人数}}所示结果，我们可以发现从2022年6月开始，Wordle的人数逐渐进入稳定期，对于该时期的数据我们有理由认为其每日报告的人数服从正态分布。因此我们可以利用\textcolor{blue}{\cref{tab:XGBoost预测结果}}中的RMSE来计算预测区间，其计算方式如下：
 
 记每日报告人数为$X$，则$X\sim N(\mu,\sigma^2)$，其中$\mu$为样本均值，这里由于处于稳定期，我们假设预测值近似为样本均值，$\sigma$为RMSE，则标准误差为
 \begin{equation}
@@ -496,7 +507,7 @@
 	\end{itemize}
 	
 	构造完上述指标后，需要对非数字类型数据编码。对于每位字母，为了避免大写字母的影响，我们首先将所有单词均转化为小写字母组合字母，再将“a”至“z”以数字$1$至$26$连续编号；对于单词词性，我们采用Label Encoder编码。
-	\subsubsection{单词属性与玩家游戏中的表现关联分析}
+	\subsubsection{单词属性与玩家游戏中的表现关联分析}\label{单词属性与玩家游戏中的表现关联分析}
 	对数据集经过上述单词属性的分析，我们将其与玩家游戏中的表现进行关联分析，这里我们绘制\textbf{皮尔逊相关系数（Pearson Correlation Coefficient）}热力图，如\textcolor{blue}{\cref{fig:皮尔逊相关系数热力图}}所示，其可衡量两个变量之间的相似度\textcolor{blue}{\cite{ppearson1}}，不妨用$\rho\left(x,y\right)$表示皮尔逊相关系数，则
 	\begin{equation}
 	\rho\left(x,y\right)=\frac{\sum\limits_{i=1}^{n}\left(x_{i}-\mu_x\right)\left(y_{i}-\mu_y\right)}{\sqrt{\sum\limits_{i=1}^{n}\left(x_{i}-\mu_x\right)^{2}}\sqrt{\sum\limits_{i=1}^{n}\left(y_{i}-\mu_y\right)^{2}}},\quad\mu=\frac{1}{m}\sum_{i=1}^{m}x_i \label{fpearson}
@@ -582,9 +593,9 @@
 	\subsubsection{XGBoost与随机森林回归分别预测得分百分比结果}
 	对于XGBoost回归模型，其原理在\textcolor{blue}{\nameref{XGBoost}}中我们已经分析，此处不再赘述。
 	
-	这里我们分析随机森林回归原理。随机森林回归（Random Forest Regression，RFR）是一种采用多个决策树模型来预测分析数据的机器学习算法。它从原始训练集中随机选择一部分样本构成样本子集，使每棵决策树在不同的样本集上训练。在每个子样本集上使用决策树算法构建决策树，并在其生长过程中采用递归选择最佳划分特征，最后通过多棵决策树的预测结果进行加权平均，得到回归结果。算法伪代码如\textcolor{blue}{Algorithm \ref{RFfunction}}所示。
+	这里我们分析随机森林回归，\textbf{随机森林回归（Random Forest Regression，RFR）}是一种采用多个决策树模型来预测分析数据的机器学习算法。它从原始训练集中随机选择一部分样本构成样本子集，使每棵决策树在不同的样本集上训练。在每个子样本集上使用决策树算法构建决策树，并在其生长过程中采用递归选择最佳划分特征，最后通过多棵决策树的预测结果进行加权平均，得到回归结果。算法伪代码如\textcolor{blue}{Algorithm \ref{RFfunction}}所示。
 
-	\scalebox{0.86}{
+	\scalebox{0.85}{
 	\begin{algorithm}[H]
 		\label{RFfunction}
 		\KwData{数据集$\mathcal{D}$}
@@ -688,7 +699,7 @@
 
 	因此我们有理由认为，随机森林模型预测效果较优，且在误差允许范围内预测结果正确。因此，对于2023年5月15日单词“EERIE”的预测结果如\textcolor{blue}{\cref{fig:EERIE预测结果}}所示。
 
-	\subsubsection{不确定性因素分析}
+	\subsubsection{不确定性因素分析}\label{不确定性因素分析}
 	在随机森林模型的预测过程中，我们考虑了以下可能存在的不确定性：
 	\begin{itemize}
 		\item 由于样本数据是Wordle玩家自愿在Twitter上发布收集而得到的，考虑到每位玩家的个性，一些玩家可能倾向于发布更好的结果，一些玩家不愿去分享自己较差的结果。因此，收集到的数据存在一定的主观偏差因素，不能保证样本数据的绝对随机性。
@@ -710,7 +721,7 @@
 	因此，我们需要建立相关聚类、分类算法，对样本单词进行难度的划分，同时分析单词难度与其对应属性的关系。此外，我们还需要对单词“EERIE”进行难度预测，并讨论模型的准确性。
 
 	\subsubsection{单词聚类、难度分类模型的建立与分析}
-	对于单词难度分类，我们首先对单词进行聚类分析，这里我们使用K-means聚类算法\textcolor{blue}{\footnote{在此之前我们考虑过层次聚类（Hierarchical Clustering，HC），且绘制了聚类树状图，但该模型对该数据聚类效果较差，其聚类树状图读者可自行翻阅附录，见\textcolor{blue}{\cref{fig:层次聚类树状图}}.}}。其目的是把目标数据点分成类簇，找到每个簇的中心并使其度量最小化。过程为将数据集聚集成$k$个类簇，从数据集中随机选择$N$个数据点作为数据中心，分别计算出每个点到每个数据中心的距离，并将每个点划分到离最近数据中心的类簇，在数据中心聚集了一些点后，重复上述过程，选出新的数据中心，比较第一次和第二次得到的数据中心，若两个数据中心之间的距离小于某一临界值，则此聚类达到了期望，算法终止，若距离相差很大，则继续执行算法，直到算法终止。
+	对于单词难度分类，我们首先对单词进行聚类分析，这里我们使用\textbf{K-means聚类（K-means Clustering）}算法\textcolor{blue}{\footnote{在此之前我们考虑过层次聚类（Hierarchical Clustering，HC），且绘制了聚类树状图，但该模型对该数据聚类效果较差，其聚类树状图读者可自行翻阅附录，见\textcolor{blue}{\cref{fig:层次聚类树状图}}.}}。其目的是把目标数据点分成类簇，找到每个簇的中心并使其度量最小化。过程为将数据集聚集成$k$个类簇，从数据集中随机选择$N$个数据点作为数据中心，分别计算出每个点到每个数据中心的距离，并将每个点划分到离最近数据中心的类簇，在数据中心聚集了一些点后，重复上述过程，选出新的数据中心，比较第一次和第二次得到的数据中心，若两个数据中心之间的距离小于某一临界值，则此聚类达到了期望，算法终止，若距离相差很大，则继续执行算法，直到算法终止。
 	
 	K-means算法首先需要从给定的数据对象中随机指定初始聚类数$k$和相应的初始聚类中心$C$。然后计算从初始聚类中心到其余数据对象的距离。本文选择欧氏距离进行计算。从聚类中心到空间中其他数据对象的欧氏距离公式为：
 	\begin{equation}
@@ -718,7 +729,7 @@
 	\end{equation}
 	其中$x$为数据对象，$C_i$是第$i$个聚类中心，$m$为数据对象的维度，$x_j$为数据对象$x$的第$j$个维度与聚类中心$C_i$的属性值。
 
-	根据欧氏距离，测量相似度，并将与聚类中心相似度最高的目标数据分配到$C_i$类别。同类化之后，对$k$个聚类中的数据对象进行平均，形成新一轮的聚类中心，从而降低数据集的误差平方和（Sum of Square Error，SSE），其计算公式如下：
+	根据欧氏距离，测量相似度，并将与聚类中心相似度最高的目标数据分配到$C_i$类别。同类化之后，对$k$个聚类中的数据对象进行平均，形成新一轮的聚类中心，从而降低数据集的\textbf{误差平方和（Sum of Square Error，SSE）}，其计算公式如下：
 	\begin{equation}
 		\text{SSE}=\sum_{i=1}^{k}\sum_{x\in C_i}\left|d\left(x,C_i\right)\right|^2
 	\end{equation}
@@ -760,7 +771,7 @@
 	\label{tab:类别与难度的对应关系}
 \end{table}
 
-	得到各组别后，我们通过利用主成分分析（Principal Component Analysis Cumulative，PCA）对指标进行降维处理，绘制聚类散点图，如\textcolor{blue}{\cref{fig:聚类散点二维可视化}}及\textcolor{blue}{\cref{fig:聚类散点三维可视化}}所示。
+	得到各组别后，我们通过利用\textbf{主成分分析（Principal Component Analysis Cumulative，PCA）}对指标进行降维处理，绘制聚类散点图，如\textcolor{blue}{\cref{fig:聚类散点二维可视化}}及\textcolor{blue}{\cref{fig:聚类散点三维可视化}}所示。
 	
 	\begin{figure}[H]
 		\centering
@@ -780,7 +791,7 @@
 	\end{figure}
 	观察上图我们可以发现，单词难度大的点主要分布在PC1和PC2较高的区域，而比容易的点分布在PC1与PC2较低的区域。由此我们可知随着PC1与PC2的增大，单词的难度也随之增大。通过绘制的三维可视化散点图我们发现，在难度为非常容易时，影响难度的主要因素为PC2与PC3，PC2、PC3增大时难度也随之增大，但PC1到一定临界值后其影响力开始增强，PC1也成为影响难度的主要因素，随着PC1、PC2与PC3的进一步增大，单词的难度逐渐变为非常困难。综合分析上述两幅图，我们可以发现聚类效果较优，能够较好地将单词分类。
 
-	得到各组别后，为了预测单词“EERIE”所属类别，因此我们需要建立分类模型。同时我们发现根据上述聚类结果，划分的5种难度类别的样本数量比值（非常容易:容易:中等:困难:非常困难）为$100:99:93:108:72$，接近于$1:1:1:1:1$，因此这里我们采用支持向量机（Support Vector Machine, SVM）算法，建立多分类预测模型。其建立在结构风险最小原理及Vapnik-Chervonenkis理论基础之上\textcolor{blue}{\cite{psvm}}，以有限的数据信息，在数据样本中找出合适区分类别的决策分界面，且保证边界点与分界面尽可能远，即需要再找出合适的边界分界面，该算法示意图如\textcolor{blue}{\cref{fig:svmpicture}}所示。
+	得到各组别后，为了预测单词“EERIE”所属类别，因此我们需要建立分类模型。同时我们发现根据上述聚类结果，划分的5种难度类别的样本数量比值（非常容易:容易:中等:困难:非常困难）为$100:99:93:108:72$，接近于$1:1:1:1:1$，因此这里我们采用\textbf{支持向量机（Support Vector Machine，SVM）}算法，建立多分类预测模型。其建立在\textbf{结构风险最小化（Structural Risk Minimization）}原理及\textbf{Vapnik-Chervonenkis}理论基础之上\textcolor{blue}{\cite{psvm}}，以有限的数据信息，在数据样本中找出合适区分类别的决策分界面，且保证边界点与分界面尽可能远，即需要再找出合适的边界分界面，该算法示意图如\textcolor{blue}{\cref{fig:svmpicture}}所示。
 
 	\begin{figure}[H]
 		\centering
@@ -799,7 +810,7 @@
 		\end{minipage}
 	\end{figure}
 
-	而由于SVM多应用于解决二分类问题，且我们需要建立多分类模型，因此需要对其进行相应的改进。本文采用OVR（One Versus Rest）方法，将该问题改进为多个二分类问题\textcolor{blue}{\cite{psvm}}。在模型的训练时，任意将某一类别记为一类，其余类别记为另一类别，依次下去，建立出多分类的SVM模型。而对于核函数的选择，本文选择高斯核函数进行求解，其定义公式如下
+	而由于SVM多应用于解决二分类问题，且我们需要建立多分类模型，因此需要对其进行相应的改进。本文采用\textbf{OVR（One Versus Rest）}方法，将该问题改进为多个二分类问题\textcolor{blue}{\cite{psvm}}。在模型的训练时，任意将某一类别记为一类，其余类别记为另一类别，依次下去，建立出多分类的SVM模型。而对于核函数的选择，本文选择高斯核函数进行求解，其定义公式如下
 	\begin{equation}
 		K\left(x_i, x_j\right)=\exp \left(-\frac{\left\|x_i-x_j\right\|^{2}}{2\sigma^{2}}\right)=\exp \left(-\gamma \left\|x_i-x_j\right\|^{2}\right) \label{fgauss}
 	\end{equation}
@@ -854,18 +865,18 @@
 	\subsubsection{模型效果分析}
 	为了评估我们建立模型效果，我们针对K-means聚类及SVM多分类分别进行详细分析。
 	
-	对于K-means聚类，我们计算其聚类轮廓系数（Silhouette Coefficient，SC）。轮廓系数结合了聚类的凝聚度（Cohesion）与分离度（Separation），用于评估聚类效果。该值处于$\left[-1,1\right]$之间，值越大，则代表聚类效果越好。对于样本点$i$，其轮廓系数为
+	对于K-means聚类，我们计算其\textbf{聚类轮廓系数（Silhouette Coefficient，SC）}。轮廓系数结合了聚类的\textbf{凝聚度（Cohesion）}与\textbf{分离度（Separation）}，用于评估聚类效果。该值处于$\left[-1,1\right]$之间，值越大，则代表聚类效果越好。对于样本点$i$其轮廓系数为
 	\begin{equation}
 		\text{SC}\left(i\right)=\frac{b\left(i\right)-a\left(i\right)}{\max\left\{a\left(i\right),b\left(i\right)\right\}}
 	\end{equation}
-	其中$a\left(i\right)$为对于每一样本点$i$,与其同一类中其他样本点的平均距离，$b\left(i\right)$为样本点$i$与其他类中样本点的平均距离。
+	其中$a\left(i\right)$为对于每一样本点$i$，与其同一类中其他样本点的平均距离，$b\left(i\right)$为样本点$i$与其他类中样本点的平均距离。
 	
 	对于整个聚类，其轮廓系数为所有样本点轮廓系数的均值。因此，首先我们绘制出K-means聚类的各类别轮廓系数可视化，如\textcolor{blue}{\cref{fig:轮廓系数}}所示。并计算出聚类综合轮廓系数（即均值）为$0.1225$，通过查阅相关资料\textcolor{blue}{\cite{k-means}}，可以认为该平均聚类轮廓系数达到聚类效果较好的水平。
 
 	同时我们还绘制K-means模型类间距离可视化，如\textcolor{blue}{\cref{fig:类间距离}}所示。类间距离显示了某类中心在二维空间的投影，并保留了到其他中心的距离。可视化中的中心越接近，它们在原始特征空间中的距离就越近。集群的大小是根据评分指标确定的。默认情况下，它们是按成员资格大小的，例如，属于每个中心的实例数量\textcolor{blue}{\cite{类间距离}}。然而，由于类别在2D投影，因此可能在可视化中发现类与类之间存在重叠现象，但这并不意味着它们在原始特征空间中重叠，即在高维度内，他们聚类效果明显且效果优秀。
 
 	对于SVM多分类预测模型，其预测准确率在测试集上可达到$94.74\,\%$，预测精度较高，效果较优秀。
-	\subsection{问题四}
+	\subsection{问题四}\label{问题四}
 	对于该问题，我们需要更深次地挖掘数据，发现更多有趣的信息及结论。因此在这里我们从多方面进行分析。
 	\subsubsection{每日选择困难模式人数占比变化}
 	尽管随着时间的推移，Wordle游戏游玩人数已逐渐趋向于稳定，但参与困难模式的玩家数量却稳步增加。\textcolor{blue}{\cref{fig:选择困难模式游戏玩家占比变化}}是参与困难模式的玩家人数与总玩家的百分比及日变化情况，\textcolor{blue}{\cref{fig:选择困难模式游戏玩家占比变化回归}}为每日选择困难模式人数占比线性回归残差图。
@@ -1009,7 +1020,7 @@
 	\subsection{问题五}
 	对于该问题，我们需要总结问题一至四分析结果，并向纽约时报的谜题编辑总结本文结果并提出相关建议。这里我们书写英文及中文各一份，方便读者阅读。
 	\newpage
-	\centerline{{\Large \textbf{Wordle Game Explored}}}
+	\centerline{{\Large \textbf{Wordle Game Explored}}}\label{问题五}
 	~\\
 	\noindent \textbf{To}: Puzzle Editor, The New York Times\\
 	\noindent \textbf{From}: Wordle game fans\\
@@ -1090,10 +1101,10 @@
 
 
 	\newpage
-	\section{模型灵敏度检验}
+	\section{模型灵敏度检验}\label{灵敏度分析}
 	为了更好地分析模型效果，我们绘制出SVM多分类模型的\textbf{混淆矩阵热力图}、\textbf{分类报告}、\textbf{ROC/AUC曲线}以及\textbf{分类预测结果}。
 	\begin{itemize}
-		\item \textbf{混淆矩阵热力图}。该可视化图形的每一行表示样本标签的实际类别，在本题中表示单词难度实际类别，而每一列表示样本标签的预测类别，在本题中表示单词难度划分的预测值。因此该图示的主对角线数据之和即为模型预测准确的样本数。对于多分类模型，我们可以随机指定一类为正类，而其余就为对应的负类。这里我们需要引入四项值，分别为$TP$、$FN$、$FP$、$TN$，其中T为True，F为False，这两个字母表示预测值与实际值是否相同；P为Positive，N为Negative，这两个字母表示预测出的是属于正类（阳性）还是负类（阴性）。而混淆矩阵热力图即为这些值组成，该图示可以直观地观察到预测准确与错误的情况，以及模型对于每一类别的区分程度。模型混淆矩阵热力图见\textcolor{blue}{\cref{fig:混淆矩阵热力图}}。
+		\item \textbf{混淆矩阵（Confusion Matrix）热力图}。该可视化图形的每一行表示样本标签的实际类别，在本题中表示单词难度实际类别，而每一列表示样本标签的预测类别，在本题中表示单词难度划分的预测值。因此该图示的主对角线数据之和即为模型预测准确的样本数。对于多分类模型，我们可以随机指定一类为正类，而其余就为对应的负类。这里我们需要引入四项值，分别为$TP$、$FN$、$FP$、$TN$，其中T为True，F为False，这两个字母表示预测值与实际值是否相同；P为Positive，N为Negative，这两个字母表示预测出的是属于正类（阳性）还是负类（阴性）。而混淆矩阵热力图即为这些值组成，该图示可以直观地观察到预测准确与错误的情况，以及模型对于每一类别的区分程度。模型混淆矩阵热力图见\textcolor{blue}{\cref{fig:混淆矩阵热力图}}。
 
 		\begin{figure}[H]
 			\centering
@@ -1114,7 +1125,7 @@
 
 		观察该图，我们可以发现，该模型对于预测单词难度具有较好的效果，主对角线附近元素较多，说明模型预测正确的误差较小，预测难度与实际难度非常接近，可以较好分类单词难度。
 
-		\item \textbf{分类报告}。分类报告图示可以直观得到模型各项参数，包括每一类别的精确率（Precision），召回率（Recall），F1分数值（F1-Score）。对于这三项值，其计算公式如下：
+		\item \textbf{分类报告（Classification Report）}。分类报告图示可以直观得到模型各项参数，包括每一类别的精确率（Precision），召回率（Recall），F1分数值（F1-Score）。对于这三项值，其计算公式如下：
 		\begin{itemize}
 			\item {\heiti 精确率}
 			\begin{equation}
@@ -1137,7 +1148,7 @@
 		\end{equation}
 		根据该式，我们可以得出上述结论。
 
-		\item \textbf{ROC/AUC曲线}。在分析特征曲线及曲线下面积（Receiver Operating Characteristic/Area Under the Curve, ROC/AUC）图之前，我们需要了解模型的相关参数，定义如下：
+		\item \textbf{ROC/AUC（特征曲线及曲线下面积（Receiver Operating Characteristic\\/Area Under the Curve，ROC/AUC）曲线}。在分析该图之前，我们需要了解模型的相关参数，定义如下：
 		\begin{itemize}
 			\item {\heiti 灵敏度}\textbf{（Sensitivity）}。灵敏度又被称为真阳性率，即$TP$率，定义为：
 			\begin{equation}
@@ -1200,7 +1211,7 @@
 			\end{enumerate}
 	\end{itemize}
 
-	\scalebox{0.88}{
+	\scalebox{0.85}{
 		\begin{algorithm}[H]
 			\label{贝叶斯优化}
 			\KwIn{初始化点个数$n_0$，最大迭代次数$N$，代理模型$g\left(x\right)$，采集函数$\alpha\left(x|D\right)$}
@@ -1222,7 +1233,7 @@
 		\end{algorithm}}
 
 	\subsection{模型的推广}
-	其一，XGBoost、随机森林回归模型具有处理多维数据及预测未来结果的能力，因此我们认为，其可应用于金融行业风险预测分析，及时为可能出现的经济危机做出预警，一定程度上避免恶性事件的发生。同时，在医学层面，其也可预测流行性疾病的发展趋势，并为医学专家下一步的疫情防控工作提供帮助。其二，K-means聚类与SVM多分类预测模型可较好地分类事物类别，并对未知类别进行预测，因此其有利于基于对现有未分类事物进行聚类，并对新添事物进行类别预测分析，可应用于文物鉴定等领域。总而言之，本文所建立模型有着精度较高、泛化能力较强的优秀品质，可为经济，医学，考古等多行业提供有利帮助。
+	\textbf{其一}，XGBoost、随机森林回归模型具有处理多维数据及预测未来结果的能力，因此我们认为，其可应用于金融行业风险预测分析，及时为可能出现的经济危机做出预警，一定程度上避免恶性事件的发生。同时，在医学层面，其也可预测流行性疾病的发展趋势，并为医学专家下一步的疫情防控工作提供帮助。\textbf{其二}，K-means聚类与SVM多分类预测模型可较好地分类事物类别，并对未知类别进行预测，因此其有利于基于对现有未分类事物进行聚类，并对新添事物进行类别预测分析，可应用于文物鉴定等领域。总而言之，本文所建立模型有着精度较高、泛化能力较强的优秀品质，可为经济，医学，考古等多行业提供有利帮助。
 	\newpage
 	\phantomsection
 	\addcontentsline{toc}{section}{\textbf{参考文献}}
@@ -1276,20 +1287,19 @@
 	\noindent{\heiti [B]支撑文件列表}
 	~\\
 
-	支撑文件列表如下（列表中不包含原始数据集以及中途产生的临时数据文件）：
+	支撑文件列表如下（按文件夹进行分类）：
 
-\begin{table}[H]
-	\centering
-	  \begin{tabular}{cc}
-	  \toprule
-	  \textbf{文件夹名} & \textbf{描述} \\
-	  \midrule
-	  html文件 & 包括所有解决问题的源程序运行结果 \\
-	  ipynb文件 & 包括所有解决问题的源程序源代码 \\
-	  py文件  & 包括所有解决问题的源程序输出python文件 \\
-	  仿真结果  & 包括附件1的8次航班全时刻的飞行状态预警 \\
-	  \bottomrule
-	  \end{tabular}
+\begin{table}[H]   
+	\centering     
+	\begin{tabular}{cc}     
+		\toprule     
+		\textbf{文件夹名} & \textbf{描述} \\     
+		\midrule     
+		Code  & 解决问题所有源程序，包括ipynb及其对应的py文件 \\     Figures & 论文中所有矢量图示，均为pdf文件 \\     
+		Data  & 解决问题所用数据，均为xlsx文件 \\     
+		Result & 程序输出结果，均为html文件 \\     
+		\bottomrule     
+	\end{tabular}
 \end{table}
 
 \newpage
@@ -1433,6 +1443,1243 @@ data[abs(data['HardRateDiff'])>=0.02]
 \end{python}
 \newpage
 \textbf{D.2 CreateFeatures}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
 
+# In[1]:
+
+
+import pandas as pd
+import nltk
+
+
+# In[2]:
+
+
+data = pd.read_excel("Data_Wordle_All.xlsx", sheet_name="Sheet1")
+data
+
+
+# In[3]:
+
+
+data['Letters']=data['Word'].apply(lambda x:str(list(x))[1:-1].replace("'","").replace(" ",""))
+data['w1'],data['w2'],data['w3'],data['w4'],data['w5']=data['Letters'].str.split(',',n=4).str
+letter = [str(chr(i)) for i in range(ord('a'),ord('z')+1)]
+letter_map = dict(zip(letter,range(1,27)))
+data['w1'] = data['w1'].map(letter_map)
+data['w2'] = data['w2'].map(letter_map)
+data['w3'] = data['w3'].map(letter_map)
+data['w4'] = data['w4'].map(letter_map)
+data['w5'] = data['w5'].map(letter_map)
+data
+
+
+# In[4]:
+
+
+Vowel = ['a','e','i','o','u']
+Consonant = list(set(letter).difference(set(Vowel)))
+
+
+def count_vowel(s):
+    c = 0
+    for i in range(len(s)):
+        if s[i] in Vowel:
+            c+=1
+    return c
+
+
+def count_consonant(s):
+    c = 0
+    for i in range(len(s)):
+        if s[i] in Consonant:
+            c+=1
+    return c
+
+
+data['Vowel_fre'] = data['Word'].apply(lambda x:count_vowel(x))
+data['Consonant_fre'] = data['Word'].apply(lambda x:count_consonant(x))
+data
+
+
+# In[5]:
+
+
+pos_tags = nltk.pos_tag(list(data['Word']))
+data['Speech']=pd.DataFrame(pos_tags)[1]
+data
+
+
+# In[6]:
+
+
+def count_same_letter(s):
+    d={}
+    for char in set(s):
+        d[char]=s.count(char)
+
+    sum = 0
+    for i in d:
+        if d[i]>1:
+            sum = sum + d[i]
+
+    return sum
+
+
+# In[7]:
+
+
+data['Same_letter_fre'] = data['Word'].apply(lambda x:count_same_letter(x))
+data
+
+
+# In[8]:
+
+
+Frequency=pd.read_excel("Letter_Frequency.xlsx",sheet_name="Sheet1")
+Frequency_map=dict(zip(Frequency['N'],Frequency['Frequency']))
+data['w1_fre']=data['w1']
+data['w2_fre']=data['w2']
+data['w3_fre']=data['w3']
+data['w4_fre']=data['w4']
+data['w5_fre']=data['w5']
+data.replace({'w1_fre':Frequency_map,'w2_fre':Frequency_map,'w3_fre':Frequency_map,'w4_fre':Frequency_map,'w5_fre':Frequency_map},inplace=True)
+data
+
+
+# In[9]:
+
+
+import sklearn.preprocessing as sp
+le=sp.LabelEncoder()
+data['Speech']=le.fit_transform(data['Speech'])
+data
+
+
+\end{python}
 \newpage
+\textbf{D.3 IssueOne-1}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+import seaborn as sns
+data=pd.read_excel("Data_Wordle_New.xlsx",sheet_name="Sheet1")
+data
+
+
+# In[2]:
+
+
+import matplotlib.pyplot as plt
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+plt.rcParams['axes.unicode_minus'] = False
+
+
+# In[3]:
+
+
+sns.set_style('ticks')
+ax=sns.jointplot(x=data['Contest number'],y=data['Number of reported results'],kind='kde',height=4,shade=True).plot_joint(sns.regplot,scatter=True,color='#FF3333')
+plt.tight_layout()
+plt.savefig('figures\\核密度估计值.pdf')
+
+
+# In[4]:
+
+
+import scipy.stats as st
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(16, 6))
+y = data['Number of reported results']
+plt.subplot(121)
+sns.distplot(y, kde=False, fit=st.johnsonsu, color='Red')
+plt.xticks(font='Times New Roman',fontsize=12)
+plt.yticks(font='Times New Roman',fontsize=12)
+plt.xlabel('Number of reported results',font='Times New Roman',fontsize=14)
+
+plt.subplot(122)
+st.probplot(y, dist="norm", plot=plt)
+plt.xticks(font='Times New Roman',fontsize=12)
+plt.yticks(font='Times New Roman',fontsize=12)
+plt.xlabel('Theoretical quantiles',font='Times New Roman',fontsize=14)
+plt.ylabel('Ordered Values',font='Times New Roman',fontsize=14)
+plt.title('Probability Plot',font='Times New Roman',fontsize=16)
+
+plt.tight_layout()
+plt.savefig("figures\\正态分布分析.pdf")
+
+
+# In[5]:
+
+
+data=pd.read_excel("Data_Wordle_All.xlsx",sheet_name='Sheet1')
+data
+
+
+# In[6]:
+
+
+data['Letters']=data['Word'].apply(lambda x:str(list(x))[1:-1].replace("'","").replace(" ",""))
+data['w1'],data['w2'],data['w3'],data['w4'],data['w5']=data['Letters'].str.split(',',n=4).str
+letter = [str(chr(i)) for i in range(ord('a'),ord('z')+1)]
+letter_map = dict(zip(letter,range(1,27)))
+data['w1'] = data['w1'].map(letter_map)
+data['w2'] = data['w2'].map(letter_map)
+data['w3'] = data['w3'].map(letter_map)
+data['w4'] = data['w4'].map(letter_map)
+data['w5'] = data['w5'].map(letter_map)
+data
+
+
+# In[7]:
+
+
+X1=data['Contest number']
+y1=data['Number of reported results']
+
+
+# In[8]:
+
+
+from sklearn.model_selection import train_test_split
+X1_train,X1_test,y1_train,y1_test=train_test_split(X1,y1,test_size=0.1,random_state=20222023)
+
+
+# In[9]:
+
+
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import r2_score
+import xgboost as xgb
+
+XGB_All = xgb.XGBRegressor(objective='reg:squarederror',n_estimators=100,
+                           max_depth=9,learning_rate=0.1,
+                           subsample=0.8,reg_lambda= 0.5,
+                           reg_alpha= 0,gamma= 0,
+                           colsample_bytree=0.6,min_child_weight=5)
+XGB_All.fit(X1_train,y1_train)
+pre_All=XGB_All.predict(X1)
+
+
+# In[10]:
+
+
+mae = mean_absolute_error(data['Number of reported results'], pre_All)
+mse = mean_squared_error(data['Number of reported results'], pre_All)
+rmse = mse**(1/2)
+r2=r2_score(data['Number of reported results'], pre_All)
+
+
+# In[11]:
+
+
+print(mae,mse,rmse,r2)
+
+
+# In[12]:
+
+
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+
+
+# In[13]:
+
+
+data['Number of reported results Pre']=pre_All
+plt.figure(figsize=(8, 6))
+data.plot(x='Contest number', y=['Number of reported results', 'Number of reported results Pre'])
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('Contest number',fontsize=14)
+plt.ylabel('Number of reported results',fontsize=14)
+plt.tight_layout()
+plt.savefig('figures\\XGBoost预测结果（总人数）.pdf')
+
+
+# In[14]:
+
+
+X2=data[['Contest number','Number of reported results']]
+y2=data['Number in hard mode']
+X2_train,X2_test,y2_train,y2_test=train_test_split(X2,y2,test_size=0.1,random_state=20222023)
+XGB_Hard = xgb.XGBRegressor(objective='reg:squarederror',n_estimators=100,
+                            max_depth=9,learning_rate=0.1,
+                            subsample=0.8,reg_lambda= 0.5,
+                            reg_alpha= 0,gamma= 0,
+                            colsample_bytree=0.6,min_child_weight=5)
+XGB_Hard.fit(X2_train,y2_train)
+pre_Hard=XGB_Hard.predict(X2)
+
+
+# In[15]:
+
+
+mae = mean_absolute_error(data['Number in hard mode'], pre_Hard)
+mse = mean_squared_error(data['Number in hard mode'], pre_Hard)
+rmse = mse**(1/2)
+r2=r2_score(data['Number in hard mode'], pre_Hard)
+print(mae,mse,rmse,r2)
+
+
+# In[16]:
+
+
+data['Number in hard mode Pre']=pre_Hard
+plt.figure(figsize=(8, 6))
+data.plot(x='Contest number', y=['Number in hard mode', 'Number in hard mode Pre'])
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('Contest number',fontsize=14)
+plt.ylabel('Number in hard mode',fontsize=14)
+plt.tight_layout()
+plt.savefig('figures\\XGBoost预测结果（困难人数）.pdf')
+
+
+# In[17]:
+
+
+import yellowbrick
+yellowbrick.style.rcmod.set_aesthetic(font='Times New Roman',font_scale=2)
+
+
+# In[18]:
+
+
+from yellowbrick.regressor import PredictionError
+model = PredictionError(XGB_All)
+model.fit(X1_train, y1_train)
+model.score(X1_test, y1_test)
+model.poof(outpath='figures\\XGBoost预测误差（总人数）.pdf')
+
+
+# In[19]:
+
+
+from yellowbrick.regressor import PredictionError
+model = PredictionError(XGB_Hard)
+model.fit(X2_train, y2_train)
+model.score(X2_test, y2_test)
+model.poof(outpath='figures\\XGBoost预测误差（困难人数）.pdf')
+
+
+# In[20]:
+
+
+EERIE_Pre_All=pd.read_excel("EERIE_Pre.xlsx",sheet_name='All')
+EERIE_Pre_All
+
+
+# In[21]:
+
+
+X_pre_all=XGB_All.predict(EERIE_Pre_All['Contest number'])
+X_pre_all
+
+
+# In[22]:
+
+
+EERIE_Pre_Hard=pd.read_excel("EERIE_Pre.xlsx",sheet_name='Hard')
+EERIE_Pre_Hard
+
+
+# In[23]:
+
+
+X_pre_hard=XGB_Hard.predict(EERIE_Pre_Hard[['Contest number','Number of reported results']])
+X_pre_hard
+
+
+\end{python}
+\newpage
+\textbf{D.4 IssueOne-2}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+# In[2]:
+
+
+data = pd.read_excel("Data_Wordle_All_Features.xlsx", sheet_name="Data_Wordle_All_Features")
+data
+
+
+# In[3]:
+
+
+X=data[['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)','w1','w2','w3','w4','w5','Vowel_fre','Consonant_fre','Same_letter_fre','Speech','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre']]
+X
+
+
+# In[4]:
+
+
+plt.subplots(figsize = (21, 21))
+sns.heatmap(X.corr(method='pearson'),linewidths=0.1,vmax=1.0,square=True,linecolor='white',annot=True,annot_kws={'size':12})
+plt.rcParams['font.sans-serif']=['Times New Roman']
+plt.rcParams['axes.unicode_minus']=False
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
+plt.title('Pearson\'s correlation coefficient', size=16)
+plt.savefig('figures\\皮尔逊相关系数.pdf',bbox_inches='tight')
+
+
+\end{python}
+\newpage
+\textbf{D.5 IssueTwo}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+data=pd.read_excel('Data_Wordle_All_Features.xlsx',sheet_name='Data_Wordle_All_Features')
+data
+
+
+# In[2]:
+
+
+features = ['Contest number','Number of reported results','Number in hard mode','w1','w2','w3','w4','w5','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre','Vowel_fre','Consonant_fre','Speech','Same_letter_fre']
+label = ['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)']
+
+Train_all = data[features+label].copy().dropna()
+X = Train_all[features]
+
+Y_1= Train_all[label[0]]
+Y_2= Train_all[label[1]]
+Y_3= Train_all[label[2]]
+Y_4= Train_all[label[3]]
+Y_5= Train_all[label[4]]
+Y_6= Train_all[label[5]]
+Y_7= Train_all[label[6]]
+
+
+# In[3]:
+
+
+from xgboost import XGBRegressor
+from sklearn.ensemble import RandomForestRegressor
+from lightgbm import LGBMRegressor
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+
+# In[4]:
+
+
+def linear(X,y,i):
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.1, random_state=20222023)
+    reg=LinearRegression()
+    reg.fit(X_train,y_train)
+    pre_all=reg.predict(X)
+    mae = mean_absolute_error(data[label[i-1]], pre_all)
+    mse = mean_squared_error(data[label[i-1]], pre_all)
+    rmse = mse**(1/2)
+    r2=r2_score(data[label[i-1]], pre_all)
+    print(f'线性回归：尝试{i}次，RMSE：{rmse}；MSE：{mse}；MAE：{mae}；r2：{r2}')
+
+
+def xgboost(X,y,i):
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.1, random_state=20222023)
+    reg=XGBRegressor()
+    reg.fit(X_train,y_train)
+    pre_all=reg.predict(X)
+    mae = mean_absolute_error(data[label[i-1]], pre_all)
+    mse = mean_squared_error(data[label[i-1]], pre_all)
+    rmse = mse**(1/2)
+    r2=r2_score(data[label[i-1]], pre_all)
+    print(f'XGB：尝试{i}次，RMSE：{rmse}；MSE：{mse}；MAE：{mae}；r2：{r2}')
+
+
+def rf(X,y,i):
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.1, random_state=20222023)
+    reg=RandomForestRegressor()
+    reg.fit(X_train,y_train)
+    pre_all=reg.predict(X)
+    mae = mean_absolute_error(data[label[i-1]], pre_all)
+    mse = mean_squared_error(data[label[i-1]], pre_all)
+    rmse = mse**(1/2)
+    r2=r2_score(data[label[i-1]], pre_all)
+    print(f'RF：尝试{i}次，RMSE：{rmse}；MSE：{mse}；MAE：{mae}；r2：{r2}')
+
+
+def lgbm(X,y,i):
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.1, random_state=20222023)
+    reg=LGBMRegressor(objective='regression', num_leaves=31, learning_rate=0.05, n_estimators=20)
+    reg.fit(X_train,y_train)
+    pre_all=reg.predict(X)
+    mae = mean_absolute_error(data[label[i-1]], pre_all)
+    mse = mean_squared_error(data[label[i-1]], pre_all)
+    rmse = mse**(1/2)
+    r2=r2_score(data[label[i-1]], pre_all)
+    print(f'LGBM：尝试{i}次，RMSE：{rmse}；MSE：{mse}；MAE：{mae}；r2：{r2}')
+
+
+# In[5]:
+
+
+linear(X,Y_1,1)
+linear(X,Y_2,2)
+linear(X,Y_3,3)
+linear(X,Y_4,4)
+linear(X,Y_5,5)
+linear(X,Y_6,6)
+linear(X,Y_7,7)
+
+xgboost(X,Y_1,1)
+xgboost(X,Y_2,2)
+xgboost(X,Y_3,3)
+xgboost(X,Y_4,4)
+xgboost(X,Y_5,5)
+xgboost(X,Y_6,6)
+xgboost(X,Y_7,7)
+
+rf(X,Y_1,1)
+rf(X,Y_2,2)
+rf(X,Y_3,3)
+rf(X,Y_4,4)
+rf(X,Y_5,5)
+rf(X,Y_6,6)
+rf(X,Y_7,7)
+
+lgbm(X,Y_1,1)
+lgbm(X,Y_2,2)
+lgbm(X,Y_3,3)
+lgbm(X,Y_4,4)
+lgbm(X,Y_5,5)
+lgbm(X,Y_6,6)
+lgbm(X,Y_7,7)
+
+
+# In[6]:
+
+
+eerie=pd.read_excel('EERIE.xlsx',sheet_name='Sheet1')
+eerie
+
+
+# In[7]:
+
+
+import nltk
+
+letter = [str(chr(i)) for i in range(ord('a'),ord('z')+1)]
+Vowel = ['a','e','i','o','u']
+Consonant = list(set(letter).difference(set(Vowel)))
+
+
+def count_vowel(s):
+    c = 0
+    for i in range(len(s)):
+        if s[i] in Vowel:
+            c+=1
+    return c
+
+
+def count_consonant(s):
+    c = 0
+    for i in range(len(s)):
+        if s[i] in Consonant:
+            c+=1
+    return c
+
+
+def count_same_letter(s):
+    d={}
+    for char in set(s):
+        d[char]=s.count(char)
+
+    sum = 0
+    for i in d:
+        if d[i]>1:
+            sum = sum + d[i]
+
+    return sum
+
+
+eerie['Vowel_fre'] = eerie['Word'].apply(lambda x:count_vowel(x))
+eerie['Consonant_fre'] = eerie['Word'].apply(lambda x:count_consonant(x))
+
+pos_tags = nltk.pos_tag(list(eerie['Word']))
+eerie['Speech']=pd.DataFrame(pos_tags)[1]
+eerie.replace({'Speech':{'NN':7}},inplace=True)
+
+eerie['Same_letter_fre'] = eerie['Word'].apply(lambda x:count_same_letter(x))
+
+letter_map = dict(zip(letter,range(1,27)))
+eerie['w1'] = eerie['w1'].map(letter_map)
+eerie['w2'] = eerie['w2'].map(letter_map)
+eerie['w3'] = eerie['w3'].map(letter_map)
+eerie['w4'] = eerie['w4'].map(letter_map)
+eerie['w5'] = eerie['w5'].map(letter_map)
+
+Frequency=pd.read_excel("Letter_Frequency.xlsx",sheet_name="Sheet1")
+Frequency_map=dict(zip(Frequency['N'],Frequency['Frequency']))
+eerie['w1_fre']=eerie['w1']
+eerie['w2_fre']=eerie['w2']
+eerie['w3_fre']=eerie['w3']
+eerie['w4_fre']=eerie['w4']
+eerie['w5_fre']=eerie['w5']
+eerie.replace({'w1_fre':Frequency_map,'w2_fre':Frequency_map,'w3_fre':Frequency_map,'w4_fre':Frequency_map,'w5_fre':Frequency_map},inplace=True)
+
+eerie
+
+
+# In[8]:
+
+
+features = ['Contest number','Number of reported results','Number in hard mode','w1','w2','w3','w4','w5','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre','Vowel_fre','Consonant_fre','Speech','Same_letter_fre']
+label = ['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)']
+Train_all = data[features+label].copy().dropna()
+X = Train_all[features]
+
+Y_1=Train_all[label[0]]
+Y_2=Train_all[label[1]]
+Y_3=Train_all[label[2]]
+Y_4=Train_all[label[3]]
+Y_5=Train_all[label[4]]
+Y_6=Train_all[label[5]]
+Y_7=Train_all[label[6]]
+
+reg1 = XGBRegressor(random_state=20222023).fit(X, Y_1)
+reg2 = XGBRegressor(random_state=20222023).fit(X, Y_2)
+reg3 = XGBRegressor(random_state=20222023).fit(X, Y_3)
+reg4 = XGBRegressor(random_state=20222023).fit(X, Y_4)
+reg5 = XGBRegressor(random_state=20222023).fit(X, Y_5)
+reg6 = XGBRegressor(random_state=20222023).fit(X, Y_6)
+reg7 = XGBRegressor(random_state=20222023).fit(X, Y_7)
+
+X_pred=eerie[features]
+p_pred1 = reg1.predict(X_pred)
+p_pred2 = reg2.predict(X_pred)
+p_pred3 = reg3.predict(X_pred)
+p_pred4 = reg4.predict(X_pred)
+p_pred5 = reg5.predict(X_pred)
+p_pred6 = reg6.predict(X_pred)
+p_pred7 = reg7.predict(X_pred)
+
+print(p_pred1,p_pred2,p_pred3,p_pred4,p_pred5,p_pred6,p_pred7)
+
+
+# In[9]:
+
+
+features = ['Contest number','Number of reported results','Number in hard mode','w1','w2','w3','w4','w5','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre','Vowel_fre','Consonant_fre','Speech','Same_letter_fre']
+label = ['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)']
+Train_all = data[features+label].copy().dropna()
+X = Train_all[features]
+
+Y_1= Train_all[label[0]]
+Y_2= Train_all[label[1]]
+Y_3= Train_all[label[2]]
+Y_4= Train_all[label[3]]
+Y_5= Train_all[label[4]]
+Y_6= Train_all[label[5]]
+Y_7= Train_all[label[6]]
+
+reg1 = RandomForestRegressor(random_state=202305).fit(X, Y_1)
+reg2 = RandomForestRegressor(random_state=202305).fit(X, Y_2)
+reg3 = RandomForestRegressor(random_state=202305).fit(X, Y_3)
+reg4 = RandomForestRegressor(random_state=202305).fit(X, Y_4)
+reg5 = RandomForestRegressor(random_state=202305).fit(X, Y_5)
+reg6 = RandomForestRegressor(random_state=202305).fit(X, Y_6)
+reg7 = RandomForestRegressor(random_state=202305).fit(X, Y_7)
+
+X_pred=eerie[features]
+p_pred1 = reg1.predict(X_pred)
+p_pred2 = reg2.predict(X_pred)
+p_pred3 = reg3.predict(X_pred)
+p_pred4 = reg4.predict(X_pred)
+p_pred5 = reg5.predict(X_pred)
+p_pred6 = reg6.predict(X_pred)
+p_pred7 = reg7.predict(X_pred)
+print(p_pred1,p_pred2,p_pred3,p_pred4,p_pred5,p_pred6,p_pred7)
+
+
+# In[10]:
+
+
+from yellowbrick.regressor import ResidualsPlot
+import matplotlib.pyplot as plt
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+Xt_train, Xt_test, yt_train, yt_test = train_test_split(X,Y_4, test_size=0.1, random_state=20222023)
+model = ResidualsPlot(RandomForestRegressor(random_state=202305))
+model.fit(Xt_train, yt_train)
+model.score(Xt_test, yt_test)
+model.poof(outpath="figures\\预测残差图-4.pdf")
+
+
+\end{python}
+\newpage
+\textbf{D.6 IssueThree}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+data=pd.read_excel('Data_Wordle_All_Features.xlsx',sheet_name='Data_Wordle_All_Features')
+data
+
+
+# In[2]:
+
+
+dataNew=data[['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)','w1','w2','w3','w4','w5','Vowel_fre','Consonant_fre','Speech','Same_letter_fre','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre']]
+
+
+# In[3]:
+
+
+import scipy.cluster.hierarchy as sch
+import matplotlib.pyplot as plt
+plt.figure(figsize=(24, 6))
+dendrogram = sch.dendrogram(sch.linkage(dataNew, method = 'ward'))
+plt.rcParams['font.sans-serif']=['Times New Roman']
+plt.rcParams['axes.unicode_minus']=False
+plt.xlabel('Contest number',fontsize=14)
+plt.ylabel('Sum of squares of deviations',fontsize=14)
+plt.xticks([],font='Times New Roman',fontsize=12)
+plt.yticks(font='Times New Roman',fontsize=12)
+plt.tight_layout()
+plt.savefig("figures\\层次聚类树状图.pdf")
+
+
+# In[4]:
+
+
+from yellowbrick.cluster import KElbowVisualizer
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from yellowbrick.cluster import InterclusterDistance
+from yellowbrick.cluster import SilhouetteVisualizer
+
+
+# In[5]:
+
+
+model = KElbowVisualizer(KMeans(random_state = 20222023), k=12)
+model.fit(dataNew)
+model.poof(outpath="figures\\肘部法则.pdf")
+
+
+# In[6]:
+
+
+n_clusters = 5
+cluster = KMeans(n_clusters = n_clusters, random_state = 20222023).fit(dataNew)
+y_pred = cluster.labels_
+data['Class']=y_pred
+data
+
+
+# In[7]:
+
+
+# 输出5个类别数据
+def ClassDataOutPut(i):
+    data[data['Class']==i].to_excel(f'Class\\Class {i}.xlsx',sheet_name='Class')
+
+
+for i in range(5):
+    ClassDataOutPut(i)
+
+
+# In[8]:
+
+
+silhouette_score(dataNew, y_pred)
+
+
+# In[9]:
+
+
+model = SilhouetteVisualizer(cluster)
+model.fit(dataNew)
+model.poof(outpath='figures\\轮廓系数.pdf')
+
+
+# In[10]:
+
+
+model = InterclusterDistance(cluster)
+model.fit(dataNew)
+model.poof(outpath='figures\\类间距离.pdf')
+
+
+# In[11]:
+
+
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+DataNewPCA = pca.fit_transform(dataNew)
+x0, y0= [], []
+x1, y1= [], []
+x2, y2= [], []
+x3, y3= [], []
+x4, y4= [], []
+
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+plt.rcParams['axes.unicode_minus'] = False
+
+for index, value in enumerate(y_pred):
+    if value == 0:
+        x0.append(DataNewPCA[index][0])
+        y0.append(DataNewPCA[index][1])
+    elif value == 1:
+        x1.append(DataNewPCA[index][0])
+        y1.append(DataNewPCA[index][1])
+    elif value == 2:
+        x2.append(DataNewPCA[index][0])
+        y2.append(DataNewPCA[index][1])
+    elif value == 3:
+        x3.append(DataNewPCA[index][0])
+        y3.append(DataNewPCA[index][1])
+    elif value == 4:
+        x4.append(DataNewPCA[index][0])
+        y4.append(DataNewPCA[index][1])
+
+plt.figure(figsize=(10, 10))
+
+# #定义坐标轴
+k = 200
+plt.scatter(x0, y0,s=k)
+plt.scatter(x1, y1,s=k)
+plt.scatter(x2, y2,s=k)
+plt.scatter(x3, y3,s=k)
+plt.scatter(x4, y4,s=k)
+plt.legend(['Medium','Very Easy','Hard','Very Hard','Easy'])
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('PC2',fontsize=14)
+plt.ylabel('PC1',fontsize=14)
+plt.tight_layout()
+plt.savefig('figures\\聚类散点图.pdf')
+
+
+# In[12]:
+
+
+EERIE=pd.read_excel("EERIE_Result(Initially+EERIE&EERIE).xlsx",sheet_name='EERIE_Result')
+EERIE
+
+
+# In[13]:
+
+
+data
+
+
+# In[14]:
+
+
+X=data[['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)','w1','w2','w3','w4','w5','Vowel_fre','Consonant_fre','Speech','Same_letter_fre','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre']]
+X
+
+
+# In[15]:
+
+
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+y=data['Class']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=20222023)
+SVM = SVC(random_state=20222023)
+SVM.fit(X_train, y_train)
+SVM_score = SVM.score(X_test, y_test)
+SVM_score
+
+
+# In[16]:
+
+
+SVM.predict(EERIE[['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)','w1','w2','w3','w4','w5','Vowel_fre','Consonant_fre','Speech','Same_letter_fre','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre']])
+
+
+# In[17]:
+
+
+from yellowbrick.classifier import ConfusionMatrix
+classes=['Medium','Very Easy','Hard','Very Hard','Easy']
+confusion_matrix = ConfusionMatrix(SVM, classes=classes, cmap='BuGn')
+confusion_matrix.fit(X_train, y_train)
+confusion_matrix.score(X_test, y_test)
+plt.xticks(font='Times New Roman')
+plt.yticks(font='Times New Roman')
+confusion_matrix.show(outpath='figures\\混淆矩阵热力图.pdf')
+
+
+# In[18]:
+
+
+from yellowbrick.classifier import ClassificationReport
+visualizer = ClassificationReport(SVM, classes=classes, support=True, cmap='Blues')
+visualizer.fit(X_train, y_train)
+visualizer.score(X_test, y_test)
+plt.xticks(font='Times New Roman')
+plt.yticks(font='Times New Roman')
+visualizer.show(outpath='figures\\分类报告.pdf')
+
+
+# In[19]:
+
+
+from yellowbrick.classifier import ROCAUC
+visualizer = ROCAUC(SVM)
+visualizer.fit(X_train, y_train)
+visualizer.score(X_test, y_test)
+plt.xticks(font='Times New Roman')
+plt.yticks(font='Times New Roman')
+visualizer.show(outpath='figures\\ROCAUC曲线.pdf')
+
+
+# In[20]:
+
+
+from yellowbrick.classifier import ClassPredictionError
+visualizer = ClassPredictionError(SVM, classes=classes)
+visualizer.fit(X_train, y_train)
+visualizer.score(X_test, y_test)
+plt.xticks(font='Times New Roman')
+plt.yticks(font='Times New Roman')
+visualizer.show(outpath='figures\\分类预测结果.pdf')
+
+
+\end{python}
+\newpage
+\textbf{D.7 IssueFour}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+from itertools import cycle
+import matplotlib.pyplot as plt
+import pandas as pd
+import nltk
+data=pd.read_excel("WordleClass.xlsx",sheet_name='ALL')
+data
+
+
+# In[2]:
+
+
+plt.rcParams['font.sans-serif']=['Times New Roman']
+
+
+# In[3]:
+
+
+def dclass(s):
+    if s==0:
+        return 'Medium'
+    elif s==1:
+        return 'Very Easy'
+    elif s==2:
+        return 'Hard'
+    elif s==3:
+        return 'Very Hard'
+    elif s==4:
+        return 'Easy'
+
+
+data['Class']=data['Class'].apply(dclass)
+
+data['Average Tries']=(1*data['1 try']+2*data['2 tries']+3*data['3 tries']+4*data['4 tries']+5*data['5 tries']+6*data['6 tries']+7*data['7 or more tries (X)'])/100
+
+pos_tags = nltk.pos_tag(list(data['Word']))
+data['Speech']=pd.DataFrame(pos_tags)[1]
+
+data['Letter average frequency']=(data['w1_fre']+data['w2_fre']+data['w3_fre']+data['w4_fre']+data['w5_fre'])/5
+
+data
+
+
+# In[4]:
+
+
+data['Speech'].value_counts()
+
+
+# In[5]:
+
+
+groups = data.groupby('Class')
+markers = ['1', 'x', '.','+','*']
+
+fig, ax = plt.subplots()
+for (name, group), marker in zip(groups, cycle(markers)):
+    ax.plot(group.Date, group['Number of reported results'], marker=marker, linestyle='', ms=5, label=name)
+ax.legend()
+plt.xlabel('Date',fontsize=14)
+plt.ylabel('Number of reported results',fontsize=14)
+plt.savefig('figures\\WordleClass.pdf')
+
+
+# In[6]:
+
+
+data['Hard Rate']=data['Number in hard mode']/data['Number of reported results']
+ax=data.plot.scatter(x='Date', y='Hard Rate')
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('Date',fontsize=14)
+plt.ylabel('Hard mode frequency',fontsize=14)
+plt.tight_layout()
+plt.savefig('figures\\选择困难游戏模式游戏的人数比例.pdf')
+
+
+# In[7]:
+
+
+import seaborn as sns
+sns.set_style('ticks')
+ax=sns.jointplot(x=data['Contest number'],y=data['Hard Rate'],kind='kde',height=4,shade=True).plot_joint(sns.regplot,scatter=True,color='#FF3333')
+plt.tight_layout()
+plt.savefig('figures\\选择困难游戏模式游戏的人数比例核密度.pdf')
+
+
+# In[8]:
+
+
+plt.rcParams['font.sans-serif']=['Times New Roman']
+plt.style.use('ggplot')
+sns.violinplot(x = "Class",
+               y = "Letter average frequency",
+               data = data,
+               order = ['Very Easy','Easy','Medium','Hard','Very Hard'],
+               split = True,)
+plt.savefig("figures\\单词字母平均出现率与难度.pdf")
+
+
+# In[9]:
+
+
+sns.violinplot(x = "Class",
+               y = "Hard Rate",
+               data = data,
+               order = ['Very Easy','Easy','Medium','Hard','Very Hard'],
+               split = True,)
+plt.savefig("figures\\选择困难模式占比与难度.pdf")
+
+
+# In[10]:
+
+
+sns.violinplot(x = "Speech",
+               y = "Hard Rate",
+               data = data,
+               order = ['NN','JJ','VBP','VBD','RB','VB','NNS','VBN','IN','VBZ'],
+               split = True,)
+plt.savefig("figures\\选择困难模式占比与词性.pdf")
+
+
+# In[11]:
+
+
+sns.violinplot(x = "Class",
+               y = "Average Tries",
+               data = data,
+               order = ['Very Easy','Easy','Medium','Hard','Very Hard'],
+               split = True,)
+plt.savefig("figures\\平均尝试次数与难度.pdf")
+
+
+# In[12]:
+
+
+sns.violinplot(x = "Speech",
+               y = "Average Tries",
+               data = data,
+               order = ['NN','JJ','VBP','VBD','RB','VB','NNS','VBN','IN','VBZ'],
+               split = True,)
+plt.savefig("figures\\平均尝试次数与词性.pdf")
+
+
+# In[13]:
+
+
+sns.violinplot(x = "Vowel_fre",
+               y = "Average Tries",
+               data = data,
+               order = [1,2,3],
+               split = True,)
+plt.savefig("figures\\平均尝试次数与单词中元音个数.pdf")
+
+
+# In[14]:
+
+
+sns.violinplot(x = "Same_letter_fre",
+               y = "Average Tries",
+               data = data,
+               order = [0,2,3,4],
+               split = True,)
+plt.savefig("figures\\平均尝试次数与单词中相同字母个数.pdf")
+
+
+# In[15]:
+
+
+plt.style.use('ggplot')
+plt.rcParams['font.sans-serif']=['Times New Roman']
+data.plot(x='Contest number',y=['1 try','2 tries','3 tries','4 tries'],figsize=(10,6))
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('Percentage',fontsize=14)
+plt.ylabel('Contest number',fontsize=14)
+plt.savefig('figures\\尝试次数分布1.pdf')
+
+
+# In[16]:
+
+
+data.plot(x='Contest number',y=['5 tries','6 tries','7 or more tries (X)'],figsize=(10,6))
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('Percentage',fontsize=14)
+plt.ylabel('Contest number',fontsize=14)
+plt.savefig('figures\\尝试次数分布2.pdf')
+
+
+\end{python}
+\newpage
+\textbf{D.8 IssueThreeAdd}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import matplotlib.pyplot as plt
+import pandas as pd
+data=pd.read_excel("WordleClass.xlsx",sheet_name='ALL')
+data
+
+
+# In[2]:
+
+
+from yellowbrick.features import RadViz
+from sklearn.model_selection import train_test_split
+classes=['Medium','Very Easy','Hard','Very Hard','Easy']
+features=['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)','w1','w2','w3','w4','w5','Vowel_fre','Consonant_fre','Speech','Same_letter_fre','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre']
+
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+plt.rcParams['font.size'] = '16'
+plt.figure(figsize=(10,6))
+X=data[features]
+y=data['Class']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=20222023)
+visualizer = RadViz(classes=classes, features=features)
+visualizer.fit(X, y)
+visualizer.transform(X)
+visualizer.poof(outpath='figures\\RadViz.pdf',bbox_inches="tight")
+
+
+# In[3]:
+
+
+from yellowbrick.features import Rank1D
+plt.figure(figsize=(10,5))
+visualizer = Rank1D(features=features, algorithm='shapiro')
+visualizer.fit(X, y)
+visualizer.transform(X)
+# plt.tight_layout()
+visualizer.poof(outpath="figures\\Rank1D.pdf")
+
+
+# In[4]:
+
+
+from yellowbrick.features import Rank2D
+visualizer = Rank2D(features=features, algorithm='pearson')
+plt.figure(figsize=(8,6))
+visualizer.fit(X, y)
+visualizer.transform(X)
+plt.tight_layout()
+visualizer.poof(outpath='figures\\Rank2D.pdf')
+
+
+\end{python}
+\newpage
+\textbf{D.9 PCA}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+from yellowbrick.features import PCA
+import matplotlib.pyplot as plt
+
+
+# In[2]:
+
+
+data=pd.read_excel("WordleClass.xlsx",sheet_name='ALL')
+data
+
+
+# In[3]:
+
+
+classes=['Medium','Very Easy','Hard','Very Hard','Easy']
+features=['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)','w1','w2','w3','w4','w5','Vowel_fre','Consonant_fre','Speech','Same_letter_fre','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre']
+
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+plt.rcParams['font.size'] = '16'
+plt.figure(figsize=(10,6))
+X=data[features]
+y=data['Class']
+visualizer = PCA(scale=True, projection=3, classes=classes)
+visualizer.fit_transform(X, y)
+visualizer.show(outpath="figures\\PCA-3.pdf")
+
+
+# In[4]:
+
+
+classes=['Medium','Very Easy','Hard','Very Hard','Easy']
+features=['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)','w1','w2','w3','w4','w5','Vowel_fre','Consonant_fre','Speech','Same_letter_fre','w1_fre','w2_fre','w3_fre','w4_fre','w5_fre']
+
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+plt.rcParams['font.size'] = '16'
+plt.figure(figsize=(8,10))
+X=data[features]
+y=data['Class']
+visualizer = PCA(scale=True, proj_features=3, classes=classes,heatmap=True)
+visualizer.fit_transform(X, y)
+visualizer.show(outpath="figures\\PCA-2.pdf")
+
+
+\end{python}
 \end{document}

@@ -56,7 +56,7 @@
 % \phantom{1}\\
 % \rule{\textwidth}{1.5pt}\\
 \phantom{1}\\
-\phantom{1}\hfill{\zihao{4}\@timu}\hfill\phantom{1}\\
+\phantom{1}\hfill{\zihao{-3}\@timu}\hfill\phantom{1}\\
 \phantom{1}\hfill{\label{zy}{\heiti 摘\hspace{2pc}要}}\hfill\phantom{1}\pdfbookmark[1]{摘要}{zy}\par%
 }
 {\\\phantom{1}\\{\heiti 关键词}：\@keyword\setcounter{page}{1}
