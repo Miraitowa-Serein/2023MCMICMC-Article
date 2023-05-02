@@ -3,7 +3,7 @@
 \ProvidesClass{MathModeling}[2023/04/30 version 1.0]
 
 % 设置纸张为A4纸,行距为1.34倍,设置默认字号为小4
-\LoadClass[oneside,a4paper,UTF8,linespread=1.34,zihao=-4]{ctexart}
+\LoadClass[oneside,a4paper,UTF8,linespread=1.2,zihao=-4]{ctexart}
 
 % 设置章节格式
 \ctexset{
@@ -169,7 +169,7 @@
 		language=Python,
 		numbers=left,
 		% stepnumber=5,
-		numberstyle=\tiny,
+		numberstyle=\scriptsize,
 		frame=lines,
 		keywordstyle=\color[RGB]{255,119,0},% 设置Keywords样式
 		morekeywords={as},% 将特定单词加入Kewords中

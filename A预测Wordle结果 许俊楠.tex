@@ -20,7 +20,7 @@
 
 	\section{问题的提出}
 	\subsection{问题背景}
-	作为一款单词猜谜游戏，Wordle每天都为玩家提供一个真正的英语单词作为谜题，现已推出60多种语言版本，本文以英文版本为例。其玩法为：玩家在6次或更少次数内猜出一个5个字母的单词以解决谜题。在此过程中，玩家每一次进行的猜测必须为真实存在的单词，提交后系统将对单词进行检测，若该位置显示为绿色则代表谜底单词含有该字母，且其位置正确；若为黄色则代表该字母存在但所在位置错误；若为灰色则谜底中不包含此字母。玩家可选择“常规模式”及“困难模式”进行挑战，其中在“困难模式”下玩家若找到谜底中包含的字母，即显示绿色及黄色砖块，在其后的猜测的单词中必须包含这些字母。Wordle官方统计了在Twitter上分享的每一天玩家通关所需次数。游戏两种模式玩法见\textcolor{blue}{\cref{fig:简单模式游戏}}及\textcolor{blue}{\cref{fig:困难模式游戏}}。
+	作为一款单词猜谜游戏，Wordle每天都为玩家提供一个真正的英语单词作为谜题，现已推出60多种语言版本，本文以英文版本为例。其玩法为：玩家在6次或更少次数内猜出一个5个字母的单词以解决谜题。在此过程中，玩家每一次进行的猜测必须为真实存在的单词，提交后系统将对单词进行检测，若该位置显示为绿色则代表谜底单词含有该字母，且其位置正确；若为黄色则代表该字母存在但所在位置错误；若为灰色则谜底中不包含此字母。玩家可选择“常规模式”及“困难模式”进行挑战，其中在“困难模式”下玩家若找到谜底中包含的字母，即显示绿色及黄色砖块，在其后的猜测的单词中必须包含这些字母。游戏两种模式玩法见\textcolor{blue}{\cref{fig:简单模式游戏}}及\textcolor{blue}{\cref{fig:困难模式游戏}}。Wordle官方统计了在Twitter上分享的每一天玩家通关所需次数，需要对该数据进行分析并预测未来的结果。
 	\begin{figure}[H]
 		\centering
 		\begin{minipage}{0.48\linewidth}
@@ -40,9 +40,9 @@
 
 	\subsection{问题要求}
 	\begin{itemize}
-		\item \textbf{问题一}：官方所提供报告的结果每天数量均存在差异，建立一个模型以解释该差别并预测2023年5月15日报告结果的数量区间。分析单词属性对于困难模式得分比例是否存在影响，并解释其原因。
-		\item \textbf{问题二}：建立模型预测未来谜底单词的报告结果相关百分比，说明该模型预测有哪些不确定性，并以单词“EERIE”的预测为例分析模型效果。
-		\item \textbf{问题三}：建立一个依据单词难度分类的模型，并对谜底单词分类。确定各类别中谜底单词属性及单词“EERIE”的难度并分析该模型的准确性。
+		\item \textbf{问题一}：官方所提供报告的结果每天数量均存在差异，建立一个模型以解释该差别；同时需要预测2023年5月15日报告结果的数量区间；此外还分析单词属性对于困难模式得分比例是否存在影响，并解释原因。
+		\item \textbf{问题二}：建立模型预测未来谜底单词的报告结果相关百分比，说明模型预测的不确定性因素，并对单词“EERIE”进行预测。
+		\item \textbf{问题三}：建立一个依据单词难度分类的模型对谜底单词分类。确定各类别中谜底单词属性，并对单词“EERIE”的难度进行分析，并分析模型的精度。
 		\item \textbf{问题四}：进一步分析数据集中其他有趣的特征。
 		\item \textbf{问题五}：写一封信函向《纽约时报》的谜底编辑总结分析结果。
 	\end{itemize}
@@ -63,16 +63,17 @@
 	问题一的核心目的有以下几点：{\heiti 其一}，\textbf{对报告数据进行预处理，去伪存真}；{\heiti 其二}，\textbf{研究每日结果数据的变化}；{\heiti 其三}，预测2023年5月15日报告结果数量，并建立一个合理区间；{\heiti 其四}，\textbf{研究分析单词属性与困难模式得分的关系}。对于给定的数据集，我们发现部分数据在正确性，完整度性等方面存在一定缺陷，因此我们须对数据集进行预处理。由于附数据体量较大，因此我们将将总人数，选择困难模式人数及其变化率数据可视化，直观分析变化规律并建立普适性预测模型。同时我们还考虑到游戏人数数据等不符合正态分布，因此我们放弃线性回归而选择XGBoost模型进行回归预测。此外我们对单词进行属性分析，利用Python自然语言处理nltk库，建立单词的属性模型，并绘制皮尔逊相关系数热力图分析其中的关系。
 
 	\subsection{问题二的分析}
+	问题二的核心目的在于\textbf{预测报告结果中玩家尝试次数分布的情况，并分析模型的不确定性因素}。因此我们根据问题一中已构造的单词属性，综合XGboost，线性分析，随机森林，LightGBM等回归模型的MSE、RMSE、MAE、$R^2$指标，对模型进行分析，选择最优模型，建立预测给定日期的单词玩家尝试次数分布的百分比的普适性模型，对2023年5月15日单词“EERIE”进行预测，最后分析模型中的不确定性因素。
 
 	\subsection{问题三的分析}
-	问题三的核心目的在于\textbf{根据单词难度对单词进行分类}。因此我们结合问题一所构造的特征及相关指标，对样本数据进行K-means聚类分析，并结合肘部法则选择合适的$k$值，绘制PCA降维聚类结果散点图，并计算聚类轮廓系数，分析聚类效果。在对样本数据进行分类后，将难度定义为词汇的分类标准，采用SVM多分类预测模型对分类的结果进行更详细的定性及定量分析。最后对单词“EERIE”进行分析，确定其难度。此外我们还需对模型进行合理性分析，讨论分类模型的准确性。
+	问题三的核心目的在于\textbf{根据单词难度对单词进行分类，预测单词“EERIE”所属难度，同时给出模型的预测精度}。因此我们结合问题一所构造的特征及相关指标，对样本数据进行K-means聚类分析，并结合肘部法则选择合适的$k$值，绘制PCA降维聚类结果散点图，并计算聚类轮廓系数，分析聚类效果。在对样本数据进行分类后，将难度定义为词汇的分类标准，采用SVM多分类预测模型对分类的结果进行更详细的定性及定量分析。最后对单词“EERIE”进行分析预测，确定其难度。此外我们还需对模型进行合理性分析，讨论分类模型的准确性。
 
 	\subsection{问题四的分析}
-	
-	\subsection{问题五的分析}
+	对于该问题，我们需要更深次地挖掘数据，发现更多有趣的信息及结论，因此在这里我们将从多方面进行分析，同时绘制可视化图形如散点图、核密度图、日变化图、雷达图、小提琴图等，便于对数据内在特征进行分析。
 
-	\subsection{模型灵敏度检验}
-	为分析模型灵敏度，我们针对SVM多分类预测模型绘制分类报告、混淆矩阵热力图、ROC/AUC曲线、分类预测结果，从而更好地探讨其效果。
+	\subsection{问题五的分析}
+	对于该问题，我们需要总结问题一至四分析结果，并向纽约时报的谜题编辑总结本
+	文结果并提出相关建议。本文将提供英文及中文信函各一份，方便读者阅读。
 	
 	\section{模型的假设}
 	\begin{itemize}
@@ -89,21 +90,20 @@
 			\Xhline{0.05em}
 			$\mu$ & 样本平均数 \\
 			$\sigma$ & 样本标准差 \\
-			$x_{\mathrm{standard}}$ & 经过标准化后的数据\\
-			$R\left(x\right)_{m\times n}$ & 经过某项处理后的数据特征集\\
-			$\hat{y}$ & 预测值\\
+			$y$ & 因变量实际值\\
+			$\hat{y}$ & 因变量预测值\\
 			$L^{\left(t\right)}$ & 目标函数\\
-			$\omega$ & 权重\\
+			$\rho\left(x,y\right)$ & 皮尔逊相关系数 \\
 			\Xhline{0.08em}
 		\end{tabularx}
 	\end{center}
 
-	\textbf{注：}这里并未列出部分变量，这是由于它们在不同小节处有不同的含义，因此我们会在每一节中详细讨论它们。
+	\textbf{注：}这里并未列出其余变量，这是由于它们在不同小节处有不同的含义，同时该表中也未列出专有定义的变量，这些变量在使用时会在相应位置进行详细说明。
 	\section{模型的建立与求解}
-	对于本题，本文模型的建立与求解部分主要分为数据的准备，模型的建立、求解、结果分析。
+	本文模型的建立与求解部分主要分为数据的准备，模型的建立、求解、结果分析。\textcolor{blue}{\footnote{本文所有可视化图示均为矢量图，若读者在阅读时发现图示字体过小，可适当放大PDF页面，详细查看图示数据等。}}
 	\begin{itemize}
-		\item \textbf{数据的准备}：爬取2023年数据，提高模型分析数据的准确性。并对于构建的新数据集进行预处理，方便后续模型的建立；
-		\item \textbf{模型的建立、求解、结果分析}：对于给定的数据集及爬取的新数据集，本文依据其特点，建立合适的回归、聚类、分类模型，并进行多种数据可视化，分析模型效果。
+		\item \textbf{数据的准备}：首先爬取2023年相关数据，提高模型分析的准确性。再者，对于构建的新数据集进行预处理，方便后续模型的建立，减少异常值对分析的影响；
+		\item \textbf{模型的建立、求解、结果分析}：对于整理完成的新数据集，本文依据其特点，建立合适的回归、聚类、分类预测模型，并进行多种数据可视化，分析模型效果。
 	\end{itemize}
 
 	\subsection{数据的准备}
@@ -112,7 +112,7 @@
 \begin{table}[H]
 	\centering
 	\caption{数据来源}
-	\scalebox{0.95}{
+	\scalebox{0.85}{
 	  \begin{tabular}{cc}
 	  \toprule
 	  \textbf{网址} & \textbf{描述} \\
@@ -124,14 +124,14 @@
 	\label{tab:数据来源}
 \end{table}
 	\subsubsection{2023年数据爬取}
-观察原数据集，其统计的为2022年2月7日至2022年12月31日的情况，而缺少2023年数据，且问题需要预测2023年5月15日数据，因此为提高模型精度，我们将对2023年数据进行爬取，并与原数据集进行合并，使得在游戏编号、时间方面连续。新数据集读者可在附件中查阅。其中部分数据见\textcolor{blue}{\cref{tab:2023年部分数据}}，新数据集截止至2023年4月25日。
+	原数据集统计的为2022年2月7日至2022年12月31日的情况，缺少2023年数据，而问题需要预测2023年5月15日数据，因此为提高模型精度，我们爬取2023年相关数据，并与原数据集进行合并，使得在游戏编号、时间方面连续。新数据集读者可在附件中查阅。其中部分数据见\textcolor{blue}{\cref{tab:2023年部分数据}}，新数据集收集截止至2023年4月25日。
 \begin{table}[H]
 	\centering
 	\caption{2023年部分数据}
-	\scalebox{0.95}{
+	\scalebox{0.80}{
 	  \begin{tabular}{ccccc}
 	  \toprule
-	  Date  & Contest number & Word  & Number of reported results & Number in hard mode \\
+	  \textbf{Date}  & \textbf{Contest number} & \textbf{Word}  & \textbf{Number of reported results} & \textbf{Number in hard mode} \\
 	  \midrule
 	  2023/1/1 & 561   & whine & 22072 & 2132 \\
 	  2023/1/2 & 562   & skirt & 22252 & 2094 \\
@@ -142,21 +142,24 @@
 	  \end{tabular}}
 	\label{tab:2023年部分数据}
 \end{table}
-  
+
+	\subsubsection{百分比异常值}
+	根据对原数据集中尝试次数百分比的理解，其7次累计和应为$1$，因此我们计算数据中玩家尝试次数百分比的累计和，我们发现，除游戏编号为$281$的数据累计百分比为$126\,\%$，其余数据均在$\left(100\pm2\right)\,\%$的范围内，因此我们有理由认为该天存在统计误差，并记为异常值。
+
 	\subsubsection{异常单词的修正}
 	根据Wordle游戏规则，每日谜底单词均为5个字母长度，因此我们对原数据集所有单词进行分析，筛选出字母数不为5个的单词，并依据Wordle游戏每日单词统计的数据与游戏编号进行比对，将上述错误单词替换为正确单词，更换结果见\textcolor{blue}{\cref{tab:单词修正}}。
 \begin{table}[H]
 	\centering
 	\caption{单词修正}
-	\scalebox{0.95}{
-	  \begin{tabular}{ccc}
+	\scalebox{0.85}{
+	  \begin{tabular}{cccc}
 	  \toprule
-	  \textbf{游戏编号} & \textbf{异常单词} & \textbf{替换单词} \\
+	  \textbf{游戏编号} & \textbf{时间} & \textbf{异常单词} & \textbf{替换单词} \\
 	  \midrule
-	  207   & favor \textcolor{blue}{\tablefootnote{该单词错误原因是在表格数据中其后有一空格，该空格会影响后续问题的解决。}}  & favor \\
-	  314   & tash  & trash \\
-	  525   & clen  & clean \\
-	  545   & rprobe & probe \\
+	  207   & 2022/1/12 & favor \textcolor{blue}{\tablefootnote{该单词错误原因是在表格数据中其后有一空格，该空格会影响后续问题的解决。}} & favor \\
+	  314   & 2022/4/29 & tash  & trash \\
+	  525   & 2022/11/26 & clen  & clean \\
+	  545   & 2022/12/16 & rprobe & probe \\
 	  \bottomrule
 	  \end{tabular}}
 	\label{tab:单词修正}
@@ -176,7 +179,7 @@
 		%\qquad
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.76\linewidth]{核密度估计值.pdf}
+			\includegraphics[width=0.62\linewidth]{核密度估计值.pdf}
 			\caption{每日报告结果变化趋势}
 			\label{fig:每日报告结果变化趋势}
 		\end{minipage}
@@ -200,14 +203,14 @@
 		\centering
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.96\linewidth]{每日选择困难模式人数频率变化.pdf}
+			\includegraphics[width=0.76\linewidth]{每日选择困难模式人数频率变化.pdf}
 			\caption{每日选择困难模式人数频率变化}
 			\label{fig:每日选择困难模式人数频率变化}
 		\end{minipage}
 		%\qquad
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.96\linewidth]{每日选择困难模式人数频率变化率.pdf}
+			\includegraphics[width=0.76\linewidth]{每日选择困难模式人数频率变化率.pdf}
 			\caption{每日选择困难模式人数频率变化率}
 			\label{fig:每日选择困难模式人数频率变化率}
 		\end{minipage}
@@ -216,24 +219,22 @@
 \begin{table}[H]
 	\centering
 	\caption{异常数据分析}
-	\scalebox{0.95}{
+	\scalebox{0.85}{
 	  \begin{tabular}{cccccc}
 	  \toprule
 	  \textbf{游戏编号} & \textbf{当日单词} & \textbf{游戏总人数} & \textbf{选择困难模式人数} & \textbf{选择困难人数变化率} & \textbf{异常值} \\
 	  \midrule
 	  239   & robin & 277471 & 3249  & -0.022787  & 3249 \\
-	  240   & ultra & 261521 & 10343 & 0.027840  & 无 \\
+	  240   & ultra & 261521 & 10343 & 0.027840  & / \\
 	  500   & piney & 27502 & 3667  & 0.036272  & 3667 \\
-	  501   & inept & 27670 & 2640  & -0.037926  & 无 \\
+	  501   & inept & 27670 & 2640  & -0.037926  & / \\
 	  529   & study & 2569  & 2405  & 0.838601  & 2569 \\
-	  530   & eject & 22628 & 2200  & -0.838937  & 无 \\
+	  530   & eject & 22628 & 2200  & -0.838937  & / \\
 	  \bottomrule
 	  \end{tabular}}
 	\label{tab:异常数据}
 \end{table}
 
-	\subsubsection{百分比异常值}
-	根据对原数据集中尝试次数百分比的理解，其7次累计和应为$1$，因此我们计算数据中玩家尝试次数百分比的累计和，我们发现，除游戏编号为$281$的数据累计百分比为$126\,\%$，其余数据均在$\left(100\pm2\right)\,\%$的范围内，因此我们有理由认为该天存在统计误差，并记为异常值。
 	\subsubsection{异常值处理}
 对于异常值的处理，为了尽可能保留数据信息，我们采用拉格朗日插值法，对上述异常数据进行修正。
 拉格朗日插值法（Lagrange's Interpolation）是一种多项式插值的方法。对于给定的$n+1$个坐标不同的点，其可以给出一个恰好经过这$n+1$个点的多项式函数。拉格朗日基本多项式（插值基函数）如下
@@ -250,7 +251,7 @@
 \begin{table}[H]
 	\centering
 	\caption{人数异常值修正}
-	\scalebox{0.95}{
+	\scalebox{0.85}{
 	  \begin{tabular}{cccccc}
 	  \toprule
 	  \textbf{游戏编号} & \textbf{当日单词} & \textbf{游戏总人数} & \textbf{选择困难模式人数} & \textbf{异常值} & \textbf{修正值} \\
@@ -265,7 +266,7 @@
 \begin{table}[H]
 	\centering
 	\caption{百分比异常值修正}
-	\scalebox{0.88}{
+	\scalebox{0.85}{
 	  \begin{tabular}{cccccccccc}
 	  \toprule
 	  \textbf{类} & \textbf{游戏编号} & \textbf{1 try} & \textbf{2 tries} & \textbf{3 tries} & \textbf{4 tries} & \textbf{5 tries} & \textbf{6 tries} & \textbf{X} & \textbf{百分比和} \\
@@ -280,24 +281,24 @@
 	对于该问题，我们需要完成以下几点任务：
 	\begin{itemize}
 		\item 分析每日报告结果变化情况，并建立模型来解释这种变化；
-		\item 利用上述模型对2023年5月15日的报告结果进行预测，并设定置信区间；
+		\item 利用上述模型对2023年5月15日的报告结果进行预测，并给出置信水平；
 		\item 分析单词属性是否会影响困难模式下玩家尝试次数的比例，并解释原因。
 	\end{itemize}
+	
+	因此我们考虑可视化分析每日报告结果变化情况，建立XGBoost回归模型，定性定量分析，并给出在要求的置信水平下的预测区间。同时可视化数据分析单词属性是否会影响困难模式下玩家尝试次数的比例。
 	\subsubsection{每日报告结果分析}\label{XGBoost}
 	根据对数据集进行观察，我们发现游戏编号是按顺序进行连续编号的，因此游戏编号可以看作是对数据集无影响的序列。我们按游戏编号将报告结果绘制为散点图，并绘制出数据变化的整体趋势，如\textcolor{blue}{\cref{fig:每日报告结果变化趋势}}所示。观察该图，我们可以发现报告结果呈现了先增加后减小的趋势，最后逐渐趋近于稳定。其在一定程度上反映了游戏玩家的人数变化规律。考虑到游戏存在生命周期，我们认为报告结果的现象与游戏生命周期存在关系。因此考虑到游戏或信息的传播一般会经历增长、成熟、衰退和稳定的时期。报告结果是当天玩与分享Twitter的Wordle玩家的数量。同时我们认为推文的数量主要受玩家数量的影响，同时更多的推文也将吸引更多的玩家。当普通的Twitter用户看到一条关于这款游戏的推文时，他们将有$\alpha$的概率成为一位新的Wordle玩家。当一位玩家试玩该游戏后，他将会有$\beta$的概率发送一条推文，成为一位普通玩家。曾时试玩的玩家有$\gamma$的概率返回游戏，同时玩家将在多次比赛后有$\sigma$的概率第二天不再游戏。因此我们有理由认为报告结果的数量不仅仅与表层的时间序列有关，而有更深次的内在联系。因此这里我们将不考虑时间序列模型进行预测。同时，考虑线性回归模型，此时我们需要检验该数据是否符合正态分布，因此我们绘制随机变量直方图、概率密度图以及Q-Q图（Quantile-Quantile Plot），如\textcolor{blue}{\cref{fig:正态分布分析}}所示。
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.95\textwidth]{正态分布分析.pdf}
+		\includegraphics[width=0.90\textwidth]{正态分布分析.pdf}
 		\caption{正态分布分析}
 		\label{fig:正态分布分析}
 	\end{figure}
 	
-	上图左图描述报告结果数量与频率的关系。从中我们发现报告结果数量主要集中在$20000$附近，位于其他区间的报告结果数量出现的频率很小。右图描述了样本分位数与观测值确实服从正态分布时所观察到的分位数之间的关系，当各点近似分布在一条直线附近时，可认为正态性假设成立。而图中点连成的曲线与直线存在很大偏差，故人数不符合正态分布。
-
-	因此我们有理由认为对于该数据集，进行线性回归分析可能会在一定程度上得到较优效果，但这并不是在数据集集中部分的效果，极有可能会对未来的预测产生较大误差，因此我们考虑建立极端梯度提升（eXtreme Gradient Boosting，XGBoost）模型，首先对每日报告总人数进行预测，再对选择困难模式人数进行预测分析。
+	上图左图描述报告结果数量与频率的关系，们发现报告结果数量主要集中在$20000$附近，位于其他区间的报告结果数量出现的频率很小。右图描述了样本分位数与观测值确实服从正态分布时所观察到的分位数之间的关系，当各点近似分布在一条直线附近时，可认为正态性假设成立。而图中点连成的曲线与直线存在很大偏差，故人数不符合正态分布。因此我们有理由认为对于该数据集，进行线性回归分析可能会在一定程度上得到较优效果，但这并不是在数据集集中部分的效果，极有可能会对未来的预测产生较大误差，因此我们考虑建立极端梯度提升（eXtreme Gradient Boosting，XGBoost）模型，首先对每日报告总人数进行预测，再对选择困难模式人数进行预测分析。
 	XGBoost算法是一种基于树模型的优化模型，该算法通过多次迭代，生成一个新的树模型用于优化前一个树模型，随着迭代次数的增多，该模型的预测精度也会相应提高\textcolor{blue}{\cite{pxgboost1}}。
 
-		记通过数据处理后的数据集特征为$R\left(x_{ij}\right)_{m\times n}$，表示其包含$m$天的游戏情况，$n$个特征，在训练中形成的CART树的集合记为$F=\left\{f\left(x\right)=w_{q\left(x\right)},q:\mathbf{R}^n\to T,w\in \mathbf{R}^T\right\}$，其中$q$为树模型的叶节点决策规划，$T$为某一树模型叶节点数量，$w$为叶节点对应的得分\textcolor{blue}{\cite{pxgboost2}}。对于预测的$y$值，其计算公式为
+		记通过数据处理后的数据集特征为$R\left(x_{ij}\right)_{m\times n}$，表示其包含$m$天的游戏情况，$n$个特征，在训练中形成的CART树的集合记为$F=\left\{f\left(x\right)=w_{q\left(x\right)},q:\mathbf{R}^n\to T,w\in \mathbf{R}^T\right\}$，其中$q$为树模型的叶节点决策规划，$T$为某一树模型叶节点数量，$w$为叶节点对应的得分\textcolor{blue}{\cite{pxgboost2}}。对于预测的$y$值，即$\hat{y}$，计算公式为
 		\begin{equation}
 			\hat{y}=\varphi \left( x_i \right) =\sum\limits_{k=1}^K{f_k\left( x_i \right)} \label{fXGBoostypre}
 		\end{equation}
@@ -332,14 +333,14 @@
 		\centering
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.98\linewidth]{XGBoost预测结果（总人数）.pdf}
+			\includegraphics[width=0.80\linewidth]{XGBoost预测结果（总人数）.pdf}
 			\caption{XGBoost预测结果-总人数}
 			\label{fig:XGBoost预测结果总人数}
 		\end{minipage}
 		%\qquad
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.98\linewidth]{XGBoost预测结果（困难人数）.pdf}
+			\includegraphics[width=0.80\linewidth]{XGBoost预测结果（困难人数）.pdf}
 			\caption{XGBoost预测结果-困难人数}
 			\label{fig:XGBoost预测结果困难人数}
 		\end{minipage}
@@ -350,19 +351,19 @@
 		\centering
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=1.0\linewidth]{XGBoost预测误差（总人数）.pdf}
+			\includegraphics[width=0.6\linewidth]{XGBoost预测误差（总人数）.pdf}
 			\caption{XGBoost预测误差-总人数}
 			\label{fig:XGBoost预测误差总人数}
 		\end{minipage}
 		%\qquad
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=1.0\linewidth]{XGBoost预测误差（困难人数）.pdf}
+			\includegraphics[width=0.6\linewidth]{XGBoost预测误差（困难人数）.pdf}
 			\caption{XGBoost预测误差-困难人数}
 			\label{fig:XGBoost预测误差困难人数}
 		\end{minipage}
 	\end{figure}
-	此外，我们还计算出模型的平均绝对误差（Mean Absolute Error，MAE）、均方误差（Mean Squared Error，MSE）、均方根误差（Root Mean Squared Error，RMSE），以及拟合优度（Goodness of Fit）即$R^2$，其具体计算方式如下：
+	此外，我们还计算出模型的平均绝对误差（Mean Absolute Error，MAE）、均方误差（Mean Squared Error，MSE）、均方根误差（Root Mean Squared Error，RMSE），以及拟合优度（Goodness of Fit）即$R^2$，最终计算结果见\textcolor{blue}{\cref{tab:XGBoost预测结果}}。具体计算方式如下
 	\begin{itemize}
 		\item \textbf{平均绝对误差}
 			\begin{equation}
@@ -374,31 +375,29 @@
 			\end{equation}
 		\item \textbf{均方根误差}
 			\begin{equation}
-			\mathrm{RMSE}=\sqrt{\frac{1}{n}\sum_{i=1}^{n}\left(y_{i}-\hat{y}_{i}\right)^{2}} \label{RMSE}
+			\mathrm{RMSE}=\sqrt{\text{MSE}} \label{RMSE}
 			\end{equation}
 		\item \textbf{拟合优度}$\boldsymbol{R^2}$
 			\begin{equation}
 			R^{2}=\frac{\sum\limits_{i=1}^{n}\left(\hat{y}_{i}-\overline{y}\right)^{2}}{\sum\limits_{i=1}^{n}\left(y_{i}-\overline{y}\right)^{2}} \label{R2}
 			\end{equation}
 	\end{itemize}
-
-	最终计算结果见\textcolor{blue}{\cref{tab:XGBoost预测结果}}。
+  
+根据\textcolor{blue}{\cref{tab:XGBoost预测结果}}结果，我们可以发现XGBoost回归预测对于该数据集有较优表现，在误差允许范围内，预测效果良好。
 \begin{table}[H]
 	\centering
 	\caption{XGBoost回归预测结果}
-	\scalebox{0.95}{
+	\scalebox{0.85}{
 	  \begin{tabular}{ccccc}
 	  \toprule
-	  \textbf{预测} & \textbf{MAE} & \textbf{MSE} & \textbf{RMSE} & $\boldsymbol{R^2}$ \\
+	  \textbf{预测类别} & \textbf{MAE} & \textbf{MSE} & \textbf{RMSE} & $\boldsymbol{R^2}$ \\
 	  \midrule
 	  总人数   & 2586  & 29849352 & 5463  & 0.9957 \\
-	  困难人数  & 97    & 38334 & 196   & 0.9959 \\
+	  选择困难游戏模式人数  & 97    & 38334 & 196   & 0.9959 \\
 	  \bottomrule
 	  \end{tabular}}
 	\label{tab:XGBoost预测结果}
 \end{table}
-  
-根据上述结果，我们可以发现XGBoost回归预测对于该数据集有较优表现，预测效果良好，在误差允许范围内。
 
 现我们将对2023年5月15日报告情况进行预测，并且为使分析更具有一般性，我们给出在$95\,\%$的置信水平下的预测区间。但在上述分析中，我们发现对于每日报告的人数并不服从正态分布，这是由于我们选取Wordle从发布至今的每日人数情况进行分析，但游戏从发布至今存在增长、成熟、衰退与稳定的时期。根据\textcolor{blue}{\cref{fig:XGBoost预测结果总人数}}及\textcolor{blue}{\cref{fig:XGBoost预测结果困难人数}}所示结果，我们可以发现从2022年6月开始，Wordle的人数逐渐进入稳定期，对于该时期的数据我们有理由认为其每日报告的人数服从正态分布。因此我们可以利用\textcolor{blue}{\cref{tab:XGBoost预测结果}}中的均方根误差（RMSE）来计算预测区间，其计算方式如下：
 
@@ -410,7 +409,7 @@
 \begin{equation}
 	P(\mu-2\cdot\text{SE} < X < \mu+2\cdot\text{SE})=0.95
 \end{equation}
-因此$95\,\%$的置信区间为
+因此在$95\,\%$的置信水平下的预测区间为
 \begin{equation}
 	\left[\mu-2\sigma,\mu+2\sigma\right]
 \end{equation}
@@ -419,13 +418,13 @@
 \begin{table}[H]
 	\centering
 	\caption{2023年5月15日报告情况预测结果}
-	\scalebox{0.95}{
+	\scalebox{0.85}{
 	  \begin{tabular}{cccccc}
 	  \toprule
-	  \textbf{预测} & \textbf{预测值} & \textbf{RMSE} & \textbf{SE} & \textbf{区间下界} & \textbf{区间上界} \\
+	  \textbf{预测类别} & \textbf{预测值} & \textbf{RMSE} & \textbf{SE} & \textbf{区间下界} & \textbf{区间上界} \\
 	  \midrule
 	  总人数   & 18334 & 5463  & 251   & 17831  & 18352  \\
-	  困难人数  & 1874  & 196   & 9     & 1856  & 1892  \\
+	  选择困难游戏模式人数  & 1874  & 196   & 9     & 1856  & 1892  \\
 	  \bottomrule
 	  \end{tabular}}
 	\label{tab:2023年5月15日报告情况预测}
@@ -442,7 +441,7 @@
 \begin{table}[H]
 	\centering
 	\caption{单词词性分析}
-	\scalebox{0.80}{
+	\scalebox{0.90}{
 	  \begin{tabular}{cccc}
 	  \toprule
 	  \textbf{简称} & \textbf{描述} & \textbf{中文释义} & \textbf{个数} \\
@@ -471,7 +470,7 @@
 	\label{tab:单词词性分析}
 \end{table}
   
-	\item \textbf{单词中重复字母个数}：不同的单词其字母可能存在重复现象，如单词“GOOD”，字母“O”重复，对于Wordle游戏而言，程序不会提示玩家在游戏谜底中是否存在重复的字母，因此当单词中存在重复的字母时，难度也将会增加。为了规范统计，我们进行以下定义：
+	\item \textbf{单词中重复字母个数}：不同的单词其字母可能存在重复现象，如单词“GOOD”，字母“O”重复，对于Wordle游戏而言，程序不会提示玩家在游戏谜底中是否存在重复的字母。为了规范统计，我们进行以下定义：
 	\begin{itemize}
 		\item {\heiti 重复字母个数为0}：单词中不存在重复的字母，即每一位单词均不一致，例如单词“SMART”；
 		\item {\heiti 重复字母个数为2}：单词中有一个字母重复，由于重复至少存在两个相同字母，例如单词“SPELL”；
@@ -482,11 +481,11 @@
 
 因此，经过上述分析，我们可以构造出以下列数据：
 	\begin{itemize}
-		\item {\heiti 单词每位字母}：由于单词长度为五个字母，因此存在五列，构造如下：
+		\item {\heiti 单词每位字母}：由于单词长度为五个字母，因此存在五列，构造如下
 		$$
 		\left[\text{w1}\quad \text{w2}\quad \text{w3}\quad \text{w4}\quad \text{w5}\right]
 		$$
-		\item {\heiti 单词每位字母频率}：利用Map与字典配对，与每位字母形成键值对，构造如下：
+		\item {\heiti 单词每位字母频率}：利用Map与字典配对，与每位字母形成键值对，构造如下
 		$$
 		\left[\text{w1\_fre}\quad\text{w2\_fre}\quad\text{w3\_fre}\quad\text{w4\_fre}\quad\text{w5\_fre}\right]
 		$$
@@ -496,26 +495,24 @@
 		\item {\heiti 单词中重复字母个数}：构造的列名为——$\text{Same\_letter\_fre}$
 	\end{itemize}
 	
-	构造完上述指标后，由于部分指标不为数字类型数据，因此我们需要进行编码处理。对于字母编码，我们对应键值对，即字母“a”对应$1$，以此类推，字母“z”对应$26$，为了避免大写字母的影响，我们首先将所有单词均转化为小写字母组合；对于单词词性，我们采用Label Encoder编码。
+	构造完上述指标后，需要对非数字类型数据编码。对于每位字母，为了避免大写字母的影响，我们首先将所有单词均转化为小写字母组合字母，再将“a”至“z”以数字$1$至$26$连续编号；对于单词词性，我们采用Label Encoder编码。
 	\subsubsection{单词属性与玩家游戏中的表现关联分析}
-	对数据集经过上述单词属性的分析，我们将其与玩家游戏中的表现进行关联分析，这里我们绘制皮尔逊相关系数热力图，如\textcolor{blue}{\cref{fig:皮尔逊相关系数热力图}}所示。
-	
-	\textbf{皮尔逊相关系数（Pearson Correlation Coefficient）}可衡量两个变量之间的相似度，我们不妨用$\rho\left(x,y\right)$表示，计算公式\textcolor{blue}{\cite{ppearson1}}如下
+	对数据集经过上述单词属性的分析，我们将其与玩家游戏中的表现进行关联分析，这里我们绘制\textbf{皮尔逊相关系数（Pearson Correlation Coefficient）}热力图，如\textcolor{blue}{\cref{fig:皮尔逊相关系数热力图}}所示，其可衡量两个变量之间的相似度\textcolor{blue}{\cite{ppearson1}}，不妨用$\rho\left(x,y\right)$表示皮尔逊相关系数，则
 	\begin{equation}
-	\rho\left(x,y\right)=\frac{\sum\limits_{i=1}^{n}\left(x_{i}-\mu_x\right)\left(y_{i}-\mu_y\right)}{\sqrt{\sum\limits_{i=1}^{n}\left(x_{i}-\mu_x\right)^{2}}\sqrt{\sum\limits_{i=1}^{n}\left(y_{i}-\mu_y\right)^{2}}} \label{fpearson}
+	\rho\left(x,y\right)=\frac{\sum\limits_{i=1}^{n}\left(x_{i}-\mu_x\right)\left(y_{i}-\mu_y\right)}{\sqrt{\sum\limits_{i=1}^{n}\left(x_{i}-\mu_x\right)^{2}}\sqrt{\sum\limits_{i=1}^{n}\left(y_{i}-\mu_y\right)^{2}}},\quad\mu=\frac{1}{m}\sum_{i=1}^{m}x_i \label{fpearson}
 	\end{equation}
-	其中$\mu$为样本均值，对于某一列数据$x=\left[x_1,x_2,\cdots,x_m\right]^{\mathrm{T}}$，其均值为
-	\begin{equation}
-		\mu=\frac{1}{m}\sum_{i=1}^{m}x_i \label{fmean}
-	\end{equation}
+	其中，$n$为数据维度，$m$为数据个数。
 	
 	由该定义，显然$\rho\in[-1,1]$。当$\rho>0$时，上述两变量呈正相关；当$\rho=0$时，上述两变量不相关；当$\rho<0$时，上述两变量呈负相关。当$\left|\rho\right|$越接近于$1$时，则上述两变量相关性就越强\textcolor{blue}{\cite{ppearson2}}。
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.9\textwidth]{皮尔逊相关系数.pdf}
+		\includegraphics[width=1.0\textwidth]{皮尔逊相关系数.pdf}
 		\caption{皮尔逊相关系数热力图}
 		\label{fig:皮尔逊相关系数热力图}
 	\end{figure}
+
+	由皮尔逊相关系数热力图可以发现，词频与前三次尝试有显著的正相关关系，而与后几次尝试呈负相关。由此看出当一个词的词频增加时，玩家可能在前三次猜测中猜中该词，也表明该词较为简单。字母重复数与前三次尝试呈负相关，与后几次尝试呈正相关，这表明一个词中出现的重复字母越多，玩家越难以较少的次数完成猜词。同时我们也发现元音、辅音和词性对猜词次数的影响较小。同时，我们还发现在困难模式下，由于玩家只能使用前面所尝试的正确单词，因此在后续猜词中，玩家可选词语将减少，若不进行词语检索，那么将增加游戏难度，此外，也有一定可能将减少玩家猜测次数，将再更少次数内猜中该词。因此在困难模式下，得分百分比情况可能会导致峰值有左偏或有一定右偏趋势。
+
 	\subsection{问题二模型的建立与求解}
 	对于该问题，我们需要完成以下几点任务：
 	\begin{itemize}
@@ -525,7 +522,7 @@
 	
 	因此，我们需要根据相关回归算法，以单词属性为主要特征，对给定的单词玩家当日进行不同尝试次数的百分比进行预测，同时我们还需要对模型进行效果分析，并解释模型的不确定性因素。
 	\subsubsection{模型的分析}
-	由于存在多种用于分析回归问题的算法，因此我们需要对其进行比较，以选择最优的算法。我们将使用以下算法进行分析：XGboost回归，线性回归，随机森林回归，LightGBM回归。我们将使用以下指标进行评价：均方误差（MSE），平均绝对误差（MAE），均方根误差（RMSE），拟合优度$R^2$。对于该题，我们划分自变量及因变量如下：
+	我们综合XGboost回归，线性回归，随机森林回归，LightGBM回归预测模型分析，以选择最优的算法进行预测。同时我们将使用以下指标进行评价：均方误差（MSE），平均绝对误差（MAE），均方根误差（RMSE），拟合优度$R^2$。对于该题，我们划分自变量及因变量如下：
 	\begin{itemize}
 		\item \textbf{因变量}：玩家当日猜词尝试次数的百分比分布，对应于数据集
 		$$
@@ -546,14 +543,14 @@
 		
 	\end{itemize}
 	
-	根据上述划分，同时我们划分训练集及测试集比例为$9:1$，通过Python编程，我们得到上述各模型对于不同尝试次数的各项指标，最终结果见\textcolor{blue}{\cref{tab:回归模型指标}}。
+	根据上述划分，同时我们划分训练集及测试集比例为$9:1$，通过Python编程，我们得到上述各模型对于不同尝试次数的各项指标，最终结果见\textcolor{blue}{\cref{tab:回归模型指标}}。分析该表，我们可以发现四种模型中，XGBoost及随机森林效果较优秀，其MSE、RMSE、MAE均较小，$R^2$接近于$1$，说明模型的拟合效果较好。而LightGBM与线性回归模型效果较差。因此这里我们初步选择XGBoost及随机森林作为我们的预测模型。
 
 \begin{table}[H]
 	\centering
 	\caption{多种回归模型预测指标}
 	\setlength{\aboverulesep}{0pt}
 	\setlength{\belowrulesep}{0pt}
-	\scalebox{0.95}{
+	\scalebox{0.86}{
 	  \begin{tabular}{c|cccc||cccc}
 	  \toprule
 	  \multirow{2}[2]{*}{\textbf{尝试次数}} & \multicolumn{4}{c||}{\textbf{线性回归}} & \multicolumn{4}{c}{\textbf{XGBoost}} \\
@@ -582,13 +579,12 @@
 	\label{tab:回归模型指标}
 \end{table}
 
-	分析上表，我们可以发现四种模型中，XGBoost及随机森林效果较优秀，其MSE、RMSE、MAE均较小，$R^2$接近于$1$，说明模型的拟合效果较好。而LightGBM与线性回归模型效果较差。因此这里我们初步选择XGBoost及随机森林作为我们的预测模型。
 	\subsubsection{XGBoost与随机森林回归分别预测得分百分比结果}
 	对于XGBoost回归模型，其原理在\textcolor{blue}{\nameref{XGBoost}}中我们已经分析，此处不再赘述。
 	
 	这里我们分析随机森林回归原理。随机森林回归（Random Forest Regression，RFR）是一种采用多个决策树模型来预测分析数据的机器学习算法。它从原始训练集中随机选择一部分样本构成样本子集，使每棵决策树在不同的样本集上训练。在每个子样本集上使用决策树算法构建决策树，并在其生长过程中采用递归选择最佳划分特征，最后通过多棵决策树的预测结果进行加权平均，得到回归结果。算法伪代码如\textcolor{blue}{Algorithm \ref{RFfunction}}所示。
 
-	\scalebox{0.88}{
+	\scalebox{0.86}{
 	\begin{algorithm}[H]
 		\label{RFfunction}
 		\KwData{数据集$\mathcal{D}$}
@@ -620,7 +616,7 @@
 \begin{table}[H]
 	\centering
 	\caption{2023年5月15日EERIE特征数据}
-	\scalebox{0.82}{
+	\scalebox{0.80}{
 	  \begin{tabular}{ccccc}
 	  \toprule
 	  \multicolumn{5}{c}{\textbf{EERIE预测特征（自变量）}} \\
@@ -648,7 +644,7 @@
 \begin{table}[H]
 	\centering
 	\caption{2023年5月15日EERIE预测结果}
-	\scalebox{0.95}{
+	\scalebox{0.85}{
 	  \begin{tabular}{ccccccccc}
 	  \toprule
 	  \textbf{模型} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{X} & \textbf{百分比累计和} \\
@@ -661,22 +657,22 @@
 \end{table}
   
 	\subsubsection{EERIE预测及模型检验}
-	通过分析\textcolor{blue}{\cref{tab:回归模型指标}}及\textcolor{blue}{\cref{tab:2023年5月15日EERIE预测结果}}，我们可以发现，对于XGBoost而言，其虽然在MSE、RMSE、MAE、$R^2$上有较优表现，但是其对于“EERIE”的预测效果较差，玩家尝试次数情况百分比累加和仅有$89.7494\,\%$不为$100\,\%$，显然该预测结果偏差较大，究其原因，可能是由于模型产生过拟合现象，因此我们放弃XGBoost回归。而对于随机森林回归，我们发现，其在MSE、RMSE、MAE、$R^2$上的表现仅次于XGBoost模型，且预测结果在我们先前分析的百分比累计和为$\left(100\pm2\right)\,\%$的允许误差范围内，因此我们有理由认为，随机森林模型预测效果较优，且在误差允许范围内预测结果正确。因此，对于2023年5月15日单词“EERIE”的预测结果如\textcolor{blue}{\cref{fig:EERIE预测结果}}所示。
+	通过分析\textcolor{blue}{\cref{tab:回归模型指标}}及\textcolor{blue}{\cref{tab:2023年5月15日EERIE预测结果}}，我们可以发现，对于XGBoost而言，其虽然在MSE、RMSE、MAE、$R^2$上有较优表现，但是其对于“EERIE”的预测效果较差，玩家尝试次数情况百分比累加和仅有$89.7494\,\%$不为$100\,\%$，显然该预测结果偏差较大，究其原因，可能是由于模型产生过拟合现象，因此我们放弃XGBoost回归。而对于随机森林回归，我们发现，其在MSE、RMSE、MAE、$R^2$上的表现仅次于XGBoost模型，且预测结果在我们先前分析的百分比累计和为$\left(100\pm2\right)\,\%$的允许误差范围内。
 
 	\begin{figure}[H]
 		\centering
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.74\linewidth]{eerie预测结果.pdf}
-			\caption{EERIE预测结果}
-			\label{fig:EERIE预测结果}
+			\includegraphics[width=0.95\linewidth]{预测残差图-4.pdf}
+			\caption{随机森林预测残差（尝试4次）}
+			\label{fig:预测残差图-4}
 		\end{minipage}
 		%\qquad
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.95\linewidth]{预测残差图-4.pdf}
-			\caption{随机森林预测残差（尝试4次）}
-			\label{fig:预测残差图-4}
+			\includegraphics[width=0.74\linewidth]{eerie预测结果.pdf}
+			\caption{EERIE预测结果}
+			\label{fig:EERIE预测结果}
 		\end{minipage}
 	\end{figure}
 
@@ -689,6 +685,9 @@
 	\end{figure}
 
 	通过分析上述两幅图，我们可以发现在训练集上该模型拟合优度$R^2$可达到$0.898$，在测试集上拟合优度为$0.254$，这说明该模型在训练集上的拟合效果较好，但是在测试集上的拟合效果较差，这可能是由于一些不确定性因素的影响，我们将在下一小节进行详细分析。同时，我们发现模型对于7次尝试分别均控制在$\pm 2\,\%$之间，这说明模型的预测结果较为稳定，且在误差允许范围内预测结果正确。同时我们结合\textcolor{blue}{\cref{tab:回归模型指标}}中随机森林指标分析，该模型在MSE、RMSE、MAE、$R^2$表现上均较优秀。
+
+	因此我们有理由认为，随机森林模型预测效果较优，且在误差允许范围内预测结果正确。因此，对于2023年5月15日单词“EERIE”的预测结果如\textcolor{blue}{\cref{fig:EERIE预测结果}}所示。
+
 	\subsubsection{不确定性因素分析}
 	在随机森林模型的预测过程中，我们考虑了以下可能存在的不确定性：
 	\begin{itemize}
@@ -750,7 +749,7 @@
 \begin{table}[H]
 	\centering
 	\caption{类别与难度的对应关系}
-	\scalebox{0.95}{
+	\scalebox{0.85}{
 	  \begin{tabular}{c|ccccc}
 	  \toprule
 	  \textbf{类别} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} \\
@@ -761,7 +760,7 @@
 	\label{tab:类别与难度的对应关系}
 \end{table}
 
-	得到各组别后，为了分析效果，我们通过利用主成分分析（Principal Component Analysis Cumulative，PCA）对指标进行降维处理，绘制聚类散点图，如\textcolor{blue}{\cref{fig:聚类散点二维可视化}}及\textcolor{blue}{\cref{fig:聚类散点三维可视化}}所示。通过绘制出的二维可视化散点图我们发现，单词难度大的点主要分布在PC1和PC2较高的区域，而比容易的点分布在PC1与PC2较低的区域。由此我们可知随着PC1与PC2的增大，单词的难度也随之增大。通过绘制的三维可视化散点图我们发现，在难度为非常容易时，影响难度的主要因素为PC2与PC3，PC2、PC3增大时难度也随之增大，但PC1到一定临界值后其影响力开始增强，PC1也成为影响难度的主要因素，随着PC1、PC2与PC3的进一步增大，单词的难度逐渐变为非常困难。综合分析上述两幅图，我们可以发现聚类效果较优，能够较好地将单词分类。
+	得到各组别后，我们通过利用主成分分析（Principal Component Analysis Cumulative，PCA）对指标进行降维处理，绘制聚类散点图，如\textcolor{blue}{\cref{fig:聚类散点二维可视化}}及\textcolor{blue}{\cref{fig:聚类散点三维可视化}}所示。
 	
 	\begin{figure}[H]
 		\centering
@@ -779,6 +778,7 @@
 			\label{fig:聚类散点三维可视化}
 		\end{minipage}
 	\end{figure}
+	观察上图我们可以发现，单词难度大的点主要分布在PC1和PC2较高的区域，而比容易的点分布在PC1与PC2较低的区域。由此我们可知随着PC1与PC2的增大，单词的难度也随之增大。通过绘制的三维可视化散点图我们发现，在难度为非常容易时，影响难度的主要因素为PC2与PC3，PC2、PC3增大时难度也随之增大，但PC1到一定临界值后其影响力开始增强，PC1也成为影响难度的主要因素，随着PC1、PC2与PC3的进一步增大，单词的难度逐渐变为非常困难。综合分析上述两幅图，我们可以发现聚类效果较优，能够较好地将单词分类。
 
 	得到各组别后，为了预测单词“EERIE”所属类别，因此我们需要建立分类模型。同时我们发现根据上述聚类结果，划分的5种难度类别的样本数量比值（非常容易:容易:中等:困难:非常困难）为$100:99:93:108:72$，接近于$1:1:1:1:1$，因此这里我们采用支持向量机（Support Vector Machine, SVM）算法，建立多分类预测模型。其建立在结构风险最小原理及Vapnik-Chervonenkis理论基础之上\textcolor{blue}{\cite{psvm}}，以有限的数据信息，在数据样本中找出合适区分类别的决策分界面，且保证边界点与分界面尽可能远，即需要再找出合适的边界分界面，该算法示意图如\textcolor{blue}{\cref{fig:svmpicture}}所示。
 
@@ -786,14 +786,14 @@
 		\centering
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.95\linewidth]{SVM示意图.pdf}
+			\includegraphics[width=1.0\linewidth]{SVM示意图.pdf}
 			\caption{SVM示意图}
 			\label{fig:svmpicture}
 		\end{minipage}
 		%\qquad
 		\begin{minipage}{0.48\linewidth}
 			\centering
-			\includegraphics[width=0.80\linewidth]{类间距离.pdf}
+			\includegraphics[width=0.85\linewidth]{类间距离.pdf}
 			\caption{K-means聚类类间距离}
 			\label{fig:类间距离}
 		\end{minipage}
@@ -829,7 +829,9 @@
 
 	分析上述两幅图，我们可以发现，对于主成分PC1，我们可以发现其与“5 tries”“6 tries”“7 or more tries (X)”“Same\_letter\_fre”呈高度的正相关性，与“w3”“w5”“Consonant\_fre”“Speech”“w2\_fre”呈一般正相关性；同时其与“1 try”“2 tries”“3 tries”“w3\_fre”呈高度的负相关性，与“4 tries”“w1”“w2”“w4”“Vowel\_fre”“w1\_fre”\\“w5\_fre”呈一般负相关。对应于双标图，我们可以发现，当PC1越大时，即与其呈正相关的指标表现越明显（或与其呈负相关的指标表现越差）时，所猜词汇难度也就越大，反之，所猜词汇难度也就越低。对于主成分PC2，我们可以发现其与“Consonant\_fre”“4 tries”“w5”呈高度的正相关性，与“3 tries”“w1”“w2”“w3”“w4”“w5”呈若相关性，与“w\_5”“Vowel”呈高度的负相关性，对应于双标图，我们可以发现，当PC2发生变化时，影响所猜测词汇在难度上的变化不大，但容易区分出困难与中等难度的单词。同时我们可以发现对于主成分PC1可以区分词汇属于非常容易、非常困难，而对于主成分PC2，可以区分词汇属于困难、容易、中等难度。而对于组成上述二维主成分，可以在\textcolor{blue}{\cref{fig:PCA双标图}}中查看，同时可观察\textcolor{blue}{\cref{fig:21项列数据对单词难度分类皮尔逊相关系数}}得出相应结论。
 
-	\begin{figure}[H]
+	此外我们还绘制Shapiro特征重要性排序及特征划分难度RadViz图示，如\textcolor{blue}{\cref{fig:Shapiro}}\\
+	及\textcolor{blue}{\cref{fig:RadViz}}所示。根据图中信息我们可以发现，字母在日常中出现的频率、信息熵、流行度对单词难度的影响较大，而词性与是否为元音相对于其他因素而言对难度的影响较小。玩家尝试的次数越多，该单词的难度越大，单词中的字母若在日常出现的频率较低，玩家猜出单词的可能性小，该词的难度较大，同时该单词若是当今人人了解的，流行度高热词，玩家猜对的可能性大，单词的难度较小。可以发现一个词中重复单词数对玩家尝试次数影响较大，尝试次数变多说明词的难度较大，玩家很难以较少的次数猜对。
+	\begin{figure}[htbp]
 		\centering
 		\begin{minipage}{0.48\linewidth}
 			\centering
@@ -845,9 +847,6 @@
 			\label{fig:RadViz}
 		\end{minipage}
 	\end{figure}
-	
-	此外我们还绘制Shapiro特征重要性排序及特征划分难度RadViz图示，如\textcolor{blue}{\cref{fig:Shapiro}}\\
-	及\textcolor{blue}{\cref{fig:RadViz}}所示。根据图中信息我们可以发现，字母在日常中出现的频率、信息熵、流行度对单词难度的影响较大，而词性与是否为元音相对于其他因素而言对难度的影响较小。玩家尝试的次数越多，该单词的难度越大，单词中的字母若在日常出现的频率较低，玩家猜出单词的可能性小，该词的难度较大，同时该单词若是当今人人了解的，流行度高热词，玩家猜对的可能性大，单词的难度较小。可以发现一个词中重复单词数对玩家尝试次数影响较大，尝试次数变多说明词的难度较大，玩家很难以较少的次数猜对。
 
 	\subsubsection{预测单词“EERIE”难度}
 	这里我们利用上述建立的单词聚类、难度分类，即基于K-means及SVM模型，我们可以对给定单词“EERIE”进行难度的分类预测，最终模型结果将其划分为$2$类，对应于\textcolor{blue}{\cref{tab:类别与难度的对应关系}}，我们可以得到单词“EERIE”的难度为“困难（Hard）”。同时对于SVM多分类，我们有$94.74\,\%$的把握认为本文对于单词难度的划分分类预测结果正确。
@@ -928,26 +927,31 @@
 		\end{minipage}
 	\end{figure}
 
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.6\linewidth]{尝试次数分布总.pdf}
-		\caption{游戏玩家平均尝试次数分布}
-		\label{fig:尝试次数分布总}
-	\end{figure}
-
 	这里我们分析游戏编号为$483$，即2022年10月15日的数据，我们可以发现对于尝试7次及以上玩家占整体玩家的$23\,\%$，对应的单词为“CATCH”，在先前分析中，我们定义其难度为非常困难（Very Hard），结合先前分析，我们可以发现对于该单词，其由$1$个元音字母构成，重复字母数为$2$个，且其各位字母在常用英文词中出现频率较低，符合先前分析。
 
-	\subsubsection{小提琴图数据特征分析}
-	我们发现，对于某一单词而言，其各位上字母在常用英文单词中出现的概率越高，该词越有可能被划分为容易类别，反之，越不容易被划分为容易类别。但是，对于某些单词而言，若其每位字母出现频率均值较高也有可能被划分为困难类别，这可能是由于单词其他属性对其产生影响。
-
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.6\linewidth]{单词字母平均出现率与难度.pdf}
-		\caption{单词字母平均出现率与单词难度}
-		\label{fig:单词字母平均出现率与单词难度}
+		\begin{minipage}{0.48\linewidth}
+			\centering
+			\includegraphics[width=1.0\linewidth]{尝试次数分布总.pdf}
+			\caption{游戏玩家平均尝试次数分布}
+			\label{fig:尝试次数分布总}
+		\end{minipage}
+		%\qquad
+		\begin{minipage}{0.48\linewidth}
+			\centering
+			\includegraphics[width=0.8\linewidth]{单词字母平均出现率与难度.pdf}
+			\caption{单词字母平均出现率与单词难度}
+			\label{fig:单词字母平均出现率与单词难度}
+		\end{minipage}
 	\end{figure}
 
-	我们发现选择困难模式的占比与单词的难易程度基本没有关系，而单词的某些词性却影响着困难模式的占比，如VB、IN、VBZ等。在这些词性中，困难模式的占比较为平均，没有出现主要集中在某一比例的现象。
+	\subsubsection{小提琴图数据特征分析}
+	我们发现，对于某一单词而言，其各位上字母在常用英文单词中出现的概率越高，该词越有可能被划分为容易类别，反之，越不容易被划分为容易类别。但是，对于某些单词而言，若其每位字母出现频率均值较高也有可能被划分为困难类别，这可能是由于单词其他属性对其产生影响，如\textcolor{blue}{\cref{fig:单词字母平均出现率与单词难度}}所示。
+
+	我们发现选择困难模式的占比与单词的难易程度基本没有关系，而单词的某些词性却影响着困难模式的占比，如VB、IN、VBZ等。在这些词性中，困难模式的占比较为平均，没有出现主要集中在某一比例的现象，如\textcolor{blue}{\cref{fig:困难模式占比与难度}}及\textcolor{blue}{\cref{fig:困难模式占比与词性}}所示。
+
+	对于影响平均尝试次数的因素，不同的单词难度对次数的影响尤为明显，随着难度上升，玩家尝试的次数也随之增加。同时单词词性也将在一定程度上影响着玩家平均尝试的次数，如当日单词词性为NN、RB、NN等，玩家整体在尝试次数上分布差异较大，如\textcolor{blue}{\cref{fig:平均尝试次数与难度}}及\textcolor{blue}{\cref{fig:平均尝试次数与词性}}所示。
 
 	\begin{figure}[H]
 		\centering
@@ -965,8 +969,6 @@
 			\label{fig:困难模式占比与词性}
 		\end{minipage}
 	\end{figure}
-
-	对于影响平均尝试次数的因素，不同的单词难度对次数的影响尤为明显，随着难度上升，玩家尝试的次数也随之增加。同时单词词性也将在一定程度上影响着玩家平均尝试的次数，如当日单词词性为NN、RB、NN等，玩家整体在尝试次数上分布差异较大。
 
 	\begin{figure}[H]
 		\centering
@@ -1018,7 +1020,7 @@
 
 	Hello! We are a team of three Wordle enthusiasts. In order to make the game have more room for development, attract more players and increase its value, we have studied the pattern of difficulty change of the game and the chain reaction caused by the difficulty change. This letter is written to share with you the results of our analysis and research.
 
-	We found that for game propagation, it generally goes through periods of growth, maturity, decline and stability. Through our analysis, we found that the total number of players gradually tends to be stable from June 2022, which also means that the player base has been basically fixed. At the same time, we also conducted relevant statistics and found that the total number of words with 5 characters exceeds 12,000, and if we do not include excessively rare words, the range of game answers can still reach about 2,500 words, and such a vocabulary base can last for nearly 7 years. Therefore, we studied the data reported from January 7, 2022 to April 25, 2023 to build a comprehensive model of regression, clustering, and classification prediction to explore the Wordle game. For example, we found a correlation between word attributes and difficulty mode scores, and we found that too many or too few repetitive letters in a word can affect the player's score situation. In addition, when the puzzle words contain fewer letters involved in common English words, their difficulty will be higher. Accordingly, the proportion of unsuccessful answers and successes after 4-6 attempts on the same day will also increase significantly.
+	We found that for game propagation, it generally goes through periods of growth, maturity, decline and stability. Through our analysis, we found that the total number of players gradually tends to be stable from June 2022, which also means that the player base has been basically fixed. At the same time, we also conducted relevant statistics and found that the total number of words with 5 characters exceeds 12,000, and if we do not include excessively rare words, the range of game answers can still reach about 2,500 words, and such a vocabulary base can last for nearly 7 years. Therefore, we studied the data reported from January 7, 2022 to April 25, 2023 to build a comprehensive model of regression, clustering, and classification prediction to explore the Wordle game. For example, we found a correlation between word attributes and difficulty mode scores, and we found that too many or too few repetitive letters in a word can affect the player's score situation. In addition, when the puzzle words contain fewer letters involved in common English words, their difficulty will be higher. Accordingly, the proportion of unsuccessful answers and successes after 4$\sim$6 attempts on the same day will also increase significantly.
 
 	Based on these findings, we give the following recommendations for the operation of the game:
 
@@ -1220,7 +1222,7 @@
 		\end{algorithm}}
 
 	\subsection{模型的推广}
-	
+	其一，XGBoost、随机森林回归模型具有处理多维数据及预测未来结果的能力，因此我们认为，其可应用于金融行业风险预测分析，及时为可能出现的经济危机做出预警，一定程度上避免恶性事件的发生。同时，在医学层面，其也可预测流行性疾病的发展趋势，并为医学专家下一步的疫情防控工作提供帮助。其二，K-means聚类与SVM多分类预测模型可较好地分类事物类别，并对未知类别进行预测，因此其有利于基于对现有未分类事物进行聚类，并对新添事物进行类别预测分析，可应用于文物鉴定等领域。总而言之，本文所建立模型有着精度较高、泛化能力较强的优秀品质，可为经济，医学，考古等多行业提供有利帮助。
 	\newpage
 	\phantomsection
 	\addcontentsline{toc}{section}{\textbf{参考文献}}
@@ -1267,7 +1269,7 @@
 		\caption{层次聚类树状图}
 		\label{fig:层次聚类树状图}
 	\end{figure}
-\newpage
+% \newpage
 % \phantomsection
 % \addcontentsline{toc}{subsection}{[B]支撑文件列表}
 	% \section*{[B]支撑文件列表}
@@ -1290,6 +1292,7 @@
 	  \end{tabular}
 \end{table}
 
+\newpage
 	\noindent{\heiti [C]使用的软件、环境}
 	~\\
 
@@ -1299,7 +1302,7 @@
 		\item Visual Studio Code 1.77.3
 		\item WPS Office 2023春季更新（14036）
 		\item Python 3.10.4
-		\item Pycharm 2023.1 (Professional Edition)
+		\item Pycharm 2023.1.1 (Professional Edition)
 	\end{itemize}
 
 	\textbf{C.2}：Python环境下所用使用到的库及其版本如下：
@@ -1307,19 +1310,19 @@
 	\centering
 	\setlength{\aboverulesep}{0pt}
 	\setlength{\belowrulesep}{0pt}
-	\scalebox{0.85}{
+	\scalebox{0.90}{
 	  \begin{tabular}{cc||cc}
 	  \toprule
-	  \textbf{库}     & \textbf{版本}    & \textbf{库}     & \textbf{版本} \\
+	  \textbf{库} & \textbf{版本} & \textbf{库} & \textbf{版本} \\
 	  \midrule
 	  copy  & 内置库   & matplotlib & 3.5.2 \\
-	  jupyter & 1.0.0 & numpy & 1.22.4+mkl \\
-	  jupyter-client & 7.3.1 & openpyxl & 3.0.10 \\
-	  jupyter-console & 6.4.3 & pandas & 1.4.2 \\
-	  jupyter-contrib-core & 0.4.0 & pyecharts & 1.9.1 \\
+	  jupyter & 1.0.0 & nltk  & 3.7 \\
+	  jupyter-client & 7.3.1 & numpy & 1.22.4+mkl \\
+	  jupyter-console & 6.4.3 & openpyxl & 3.0.10 \\
+	  jupyter-contrib-core & 0.4.0 & pandas & 1.4.2 \\
 	  jupyter-contrib-nbextensions & 0.5.1 & scikit-learn & 0.22.2 psot1 \\
-	  jupyter-highlight-selected-word & 0.2.0 & sklearn & 0.0  \\
-	  jupyterlab-pygments & 0.2.2 & snapshot\_phantomjs & 0.0.3 \\
+	  jupyter-highlight-selected-word & 0.2.0 & seaborn & 0.11.2 \\
+	  jupyterlab-pygments & 0.2.2 & sklearn & 0 \\
 	  jupyterlab-widgets & 1.1.0 & xgboost & 1.6.1 \\
 	  jupyter-latex-envs & 1.4.6 & yellowbrick & 1.4 \\
 	  jupyter-nbextensions-configurator & 0.5.0 &       &  \\
@@ -1331,12 +1334,107 @@
 
 \noindent{\heiti [D]问题解决源程序}
 
-\textbf{D.1 航班1数据分析}
+\textbf{D.1 DataPreProcessing}
+\begin{python}
+#!/usr/bin/env python
+# coding: utf-8
 
+# In[1]:
+
+
+import pandas as pd
+data=pd.read_excel("Data_Wordle.xlsx",sheet_name="Sheet1")
+data
+
+
+# In[2]:
+
+
+data['Date']=pd.to_datetime(data['Date'])
+data.sort_values(by='Date',inplace=True)
+data=data.reset_index(drop=True)
+data
+
+
+# In[3]:
+
+
+import matplotlib.pyplot as plt
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+plt.rcParams['axes.unicode_minus'] = False
+ax=data.plot(x='Date', y=['Number of reported results', 'Number in hard mode'])
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('Date',fontsize=14)
+plt.ylabel('Person Quantity',fontsize=14)
+plt.legend()
+plt.tight_layout()
+plt.savefig("figures\\报告结果每日变化.pdf")
+
+
+# In[4]:
+
+
+data['WordLength'] = data['Word'].apply(len)
+data['SumRate']=data.loc[:,['1 try','2 tries','3 tries','4 tries','5 tries','6 tries','7 or more tries (X)']].sum(axis=1)
+data['HardRate']=data['Number in hard mode']/data['Number of reported results']
+data
+
+
+# In[5]:
+
+
+data[data['WordLength']!=5]
+
+
+# In[6]:
+
+
+ax=data.plot.scatter(x='Date', y='HardRate')
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('Date',fontsize=14)
+plt.ylabel('Hard mode frequency',fontsize=14)
+plt.tight_layout()
+plt.savefig('figures\\每日选择困难模式人数频率变化.pdf')
+
+
+# In[7]:
+
+
+data['HardRateDiff']=data['HardRate'].diff()
+
+
+# In[8]:
+
+
+data.plot.scatter(x='Date', y='HardRateDiff',color='g')
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.xlabel('Date',fontsize=14)
+plt.ylabel('Hard mode frequency gradient',fontsize=14)
+plt.tight_layout()
+plt.savefig('figures\\每日选择困难模式人数频率变化率.pdf')
+
+
+# In[9]:
+
+
+data=data.fillna(0)
+data
+
+
+# In[10]:
+
+
+data[abs(data['HardRateDiff'])>=0.02]
+
+
+\end{python}
 \newpage
-\textbf{D.2 航班2数据分析}
+\textbf{D.2 CreateFeatures}
+\begin{python}
 
+\end{python}
 \newpage
-\textbf{D.3 航班3数据分析}
-
 \end{document}
