@@ -17,7 +17,7 @@
 	\begin{abstract}
 		Wordle是一款具有简单绘画风格的猜词小游戏，在网络上非常流行，Wordle玩家会在各种社交平台上分享他们的战绩。优化游戏设计、提高用户体验，对提高受欢迎程度、娱乐价值至关重要。因此，本文采用了回归、聚类、预测、自然语言处理等方法，对Wordle游戏的数据进行分析。
 
-		{\heiti 针对问题一}，\textbf{需要分析Wordle的Twitter玩家每日报告结果变化情况，并建立模型来解释这种变化；对2023年5月15日的报告结果进行预测，并给出置信水平；分析单词属性是否会影响困难模式下玩家尝试次数的比例，并解释原因。}由于数据集仅有2022年的一部分，且问题需要预测2023年5月15日，因此，本文首先对2023年相关数据进行\textbf{爬取}。之后对数据进行合并整理，同时对\textbf{百分比异常值、异常单词、人数异常值}进行\textbf{预处理}。在此基础上，本文对游戏\textbf{生命周期}进行分析，建立\textbf{XGBoost回归预测模型}，分别对每日报告玩家总数及选择困难模式游戏玩家人数进行数据学习、测试、预测。两模型\textbf{拟合优度}$\boldsymbol{R^2}$分别可达$\boldsymbol{0.9957}$及$\boldsymbol{0.9959}$，其\textbf{MAE}、\textbf{MSE}、\textbf{RMSE}均较小，具体见\textcolor{blue}{\cref{tab:XGBoost预测结果}}。最终得到2023年5月15日报告总人数区间结果为$\boldsymbol{\left[17831,18352\right]}$，选择困难模式游戏人数为$\boldsymbol{\left[1856,1892\right]}$，且结果建立在$\boldsymbol{95\,\%}$的\textbf{置信水平}上。此外本文还对单词进行属性分析，构造出\textbf{单词词性、元音字母个数、每位字母在英文中出现频率、单词中重复字母个数}等特征，绘制\textbf{皮尔逊相关系数热力图}，分析单词属性与玩家游戏中的表现的关联性，具体结果见{\heiti \textcolor{blue}{\nameref{单词属性与玩家游戏中的表现关联分析}}}。
+		{\heiti 针对问题一}，\textbf{需要分析Wordle的Twitter玩家每日报告结果变化情况，并建立模型来解释这种变化；对2023年5月15日的报告结果进行预测，并给出置信水平；分析单词属性是否会影响困难模式下玩家尝试次数的比例，并解释原因。}由于数据集仅有2022年的一部分，且问题需要预测2023年5月15日，因此，本文首先对2023年相关数据进行\textbf{爬取}。之后对数据进行合并整理，同时对\textbf{百分比异常值、异常单词、人数异常值}进行\textbf{预处理}。在此基础上，本文对游戏\textbf{生命周期}进行分析，建立\textbf{XGBoost回归预测模型}，分别对每日报告玩家总数及选择困难模式游戏玩家人数进行数据学习、测试、预测。两模型\textbf{拟合优度}$\boldsymbol{R^2}$分别可达$\boldsymbol{0.9957}$及$\boldsymbol{0.9959}$，其\textbf{MAE}、\textbf{MSE}、\textbf{RMSE}均较小，具体见\textcolor{blue}{\cref{tab:XGBoost预测结果}}。最终得到2023年5月15日报告总人数区间结果为$\boldsymbol{\left[17331,17852\right]}$，选择困难模式游戏人数为$\boldsymbol{\left[1736,1772\right]}$，且结果建立在$\boldsymbol{95\,\%}$的\textbf{置信水平}上。此外本文还对单词进行属性分析，构造出\textbf{单词词性、元音字母个数、每位字母在英文中出现频率、单词中重复字母个数}等特征，绘制\textbf{皮尔逊相关系数热力图}，分析单词属性与玩家游戏中的表现的关联性，具体结果见{\heiti \textcolor{blue}{\nameref{单词属性与玩家游戏中的表现关联分析}}}。
 
 		{\heiti 针对问题二}，\textbf{需要对给定的单词预测当天玩家游戏尝试次数百分比分布情况，并分析模型的不确定性因素。}因此，本文综合\textbf{XGboost，线性预测，随机森林，LightGBM回归模型}进行分析，依据\textbf{MAE}、\textbf{MSE}、\textbf{RMSE}、$\boldsymbol{R^2}$，选择最优的算法进行预测，模型效果比较见\textcolor{blue}{\cref{tab:回归模型指标}}。最终本文选择\textbf{随机森林}模型对单词“EERIE”进行预测，其百分比结果为$\boldsymbol{\left[0.17,4.73,16.24,30.72,27.86,14.03,6.08\right]}$，模型\textbf{MAE}控制在$\boldsymbol{2\,\%}$内，效果良好。此外，本文还对模型的不确定性因素进行分析，具体结果见{\heiti \textcolor{blue}{\nameref{不确定性因素分析}}}。
 
@@ -423,7 +423,7 @@
 \end{equation}
 因此在$95\,\%$的置信水平下的预测区间为
 \begin{equation}
-	\left[\mu-2\sigma,\mu+2\sigma\right]
+	\left[\mu-2\cdot\text{SE},\mu+2\cdot\text{SE}\right]
 \end{equation}
 
 通过上述分析，预测具体结果见\textcolor{blue}{\cref{tab:2023年5月15日报告情况预测}}。
@@ -435,14 +435,14 @@
 	  \toprule
 	  \textbf{预测类别} & \textbf{预测值} & \textbf{RMSE} & \textbf{SE} & \textbf{区间下界} & \textbf{区间上界} \\
 	  \midrule
-	  总人数   & 18334 & 5463  & 251   & 17831  & 18352  \\
-	  选择困难游戏模式人数  & 1874  & 196   & 9     & 1856  & 1892  \\
+	  总人数   & 17834 & 5463  & 251   & 17331  & 17852  \\
+	  选择困难游戏模式人数  & 1754  & 196   & 9     & 1736  & 1772  \\
 	  \bottomrule
 	  \end{tabular}}
 	\label{tab:2023年5月15日报告情况预测}
 \end{table}
 
-因此，我们得到最终预测结果，即2023年5月15日的报告情况为：报告总人数为$\left[17831,18352\right]$人，选择困难模式游戏的人数为$\left[1856,1892\right]$人。
+因此，我们得到最终预测结果，即2023年5月15日的报告情况为：报告总人数为$\left[17331,17852\right]$人，选择困难模式游戏的人数为$\left[1736,1772\right]$人。
 	\subsubsection{单词属性分析}
 	在Wordle游戏中，影响玩家猜测次数的因素包括单词结构的复杂性、单词使用频率、词性等相关因素。为了区分不同单词对猜谜游戏难度的影响，我们通过分析以下属性对单词进行量化。
 \begin{itemize}
@@ -635,7 +635,7 @@
 	  \midrule
 	  \multicolumn{1}{c}{\textbf{Date}} & \textbf{Contest number} & \textbf{Word} & \textbf{Number of reported results} & \textbf{Number in hard mode} \\
 	  \midrule
-	  \multirow{3}[6]{*}{2023/5/15} & 695   & EERIE & 18334 & 1874 \\
+	  \multirow{3}[6]{*}{2023/5/15} & 695   & EERIE & 17834 & 1754 \\
   \cmidrule{2-5}          & \textbf{Vowel\_fre} & \textbf{Speech} & \textbf{Consonant\_fre} & \textbf{Same\_letter\_fre} \\
   \cmidrule{2-5}          & 4     & 7     & 1     & 3 \\
 	  \midrule
